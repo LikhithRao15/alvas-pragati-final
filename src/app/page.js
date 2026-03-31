@@ -1,113 +1,155 @@
+"use client";
+
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+  const [revealItems, setRevealItems] = useState(false);
 
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
+  useEffect(() => {
+    const handleScroll = () => {
+      const target = document.querySelector("[data-reveals='true']");
+      if (!target) return;
+      if (window.scrollY > 120) setRevealItems(true);
+      else setRevealItems(false);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <main className="relative" data-reveals="true">
+      <section id="hero" className="min-h-screen flex items-center justify-center relative pt-30">
+        <div className="hero-bg absolute inset-0"></div>
         <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
+          src="/alvas-pragati-2024-job-fair-1715499747.webp"
+          alt="Alvas Pragati Job Fair"
+          fill
+          className="fixed inset-0 object-cover z-10"
           priority
         />
-      </div>
 
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
+        <div className="hero-content relative z-20 max-w-4xl text-center p-16">
+          <div className="hero-badge inline-flex items-center bg-primary text-white px-6 py-2 rounded-full text-sm font-bold uppercase tracking-widest mb-8 shadow-md">
+            ✦ Alva's Education Foundation · Since 1988
+          </div>
+          <h1 className="hero-title font-heading text-5xl md:text-7xl font-black text-primary leading-tight mb-6">
+            Welcome to<br />
+            <span className="text-accent">Alvas Pragati</span>
+          </h1>
+          <p className="hero-sub text-xl text-text-muted mb-8">
+            Connecting Talent with Opportunity
           </p>
-        </a>
 
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
+          <div className="hero-buttons flex flex-wrap justify-center gap-5">
+            <Link href="/candidate-registration" className="hero-cta-secondary bg-white text-primary px-8 py-4 rounded-xl border-2 border-primary font-semibold shadow-lg hover:bg-primary hover:text-white transition-all">
+              <i className="fas fa-user-graduate mr-2"></i>
+              Candidate Registration
+            </Link>
+            <Link href="/company-registration" className="hero-cta-secondary bg-white text-primary px-8 py-4 rounded-xl border-2 border-primary font-semibold shadow-lg hover:bg-primary hover:text-white transition-all">
+              <i className="fas fa-building mr-2"></i>
+              Company Registration
+            </Link>
+          </div>
 
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
+          <div className="hero-stats flex flex-wrap justify-center gap-8 mt-10 pt-8 border-t border-white/30">
+            {[
+              { value: "500+", label: "Companies" },
+              { value: "8K+", label: "Placements" },
+              { value: "98%", label: "Success Rate" },
+            ].map((item) => (
+              <div key={item.label} className="stat text-center">
+                <div className="stat-num font-heading text-3xl md:text-4xl font-extrabold text-primary">
+                  {item.value}
+                </div>
+                <div className="stat-label text-xs text-text-muted uppercase tracking-wide mt-1">
+                  {item.label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+        <div className="scroll-indicator absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center text-xs text-text-muted uppercase tracking-widest animate-bounce">
+          <span>Scroll Down</span>
+          <i className="fas fa-chevron-down mt-2 text-accent"></i>
+        </div>
+      </section>
+
+      <section id="companies" className="bg-white/20 backdrop-blur-[10px] border-t border-b border-white/30 py-20">
+        <div className="container max-w-7xl mx-auto px-10">
+          <div className="header text-center pb-10">
+            <div className="section-tag inline-flex items-center gap-3 text-sm uppercase tracking-widest text-accent font-extrabold mb-6">
+              <div className="w-10 h-0.5 bg-accent rounded-full"></div>
+              Our Partners
+            </div>
+            <h2 className="section-title font-heading text-4xl md:text-5xl font-black text-primary leading-tight mb-4">
+              Trusted by Leading Companies
+            </h2>
+            <p className="text-text-muted text-lg max-w-2xl mx-auto">
+              Join hundreds of companies that trust Alvas Pragati for your recruitment needs.
+            </p>
+          </div>
+
+          <div className="marquee-track overflow-hidden relative">
+            <div className="marquee-row flex gap-6 w-max animate-marquee">
+              {['T', 'I', 'S', 'L', 'C'].map((ch, i) => (
+                <div key={i} className="company-card flex-shrink-0 w-48 bg-white/60 backdrop-blur-20 border border-glass-border rounded-3xl p-5 text-center cursor-pointer shadow-sm transition-all duration-700 hover:translate-y-[-6px] hover:rotate-1 hover:scale-105 hover:shadow-md">
+                  <div className="company-logo-wrap w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center text-2xl font-bold text-white shadow-md bg-gradient-to-br from-indigo-500 to-blue-500">
+                    {ch}
+                  </div>
+                  <div className="company-name text-sm font-semibold text-primary">Company {i + 1}</div>
+                  <div className="company-sector text-xs text-text-muted">Industry</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" className="py-24">
+        <div className="container max-w-7xl mx-auto px-10">
+          <div className="about-grid grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+            <div className="about-text">
+              <span className="section-tag inline-flex items-center gap-3 text-sm uppercase tracking-widest text-accent font-extrabold mb-6">
+                <div className="w-10 h-0.5 bg-accent rounded-full"></div>
+                About Us
+              </span>
+              <h2 className="section-title font-heading text-4xl md:text-5xl font-black text-primary leading-tight mb-6">
+                Empowering Careers, Building Futures
+              </h2>
+              <p className="text-text-muted text-lg leading-relaxed mb-6">
+                Alvas Pragati delivers the best career opportunities by matching talent with leading companies across multiple domains.
+              </p>
+              <p className="text-text-muted text-lg leading-relaxed mb-8">
+                Through partnerships, training, and personalized guidance, we create success journeys for every candidate.
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="about-feature p-4 rounded-2xl border border-glass-border bg-white/60 shadow-sm">
+                  <h3 className="about-feature-title">Placement Drives</h3>
+                  <p className="about-feature-text">Campus drives and recruitment events across domains.</p>
+                </div>
+                <div className="about-feature p-4 rounded-2xl border border-glass-border bg-white/60 shadow-sm">
+                  <h3 className="about-feature-title">Career Counseling</h3>
+                  <p className="about-feature-text">Career planning support and mentorship.</p>
+                </div>
+              </div>
+            </div>
+            <div className="about-images grid grid-cols-2 gap-4">
+              <div className="about-img-card rounded-3xl overflow-hidden aspect-square shadow-md relative">
+                <Image src="/Dr.Mohan-Alva-1.jpg" alt="Dr. Mohan Alva" fill className="object-cover" />
+              </div>
+              <div className="about-img-card rounded-3xl overflow-hidden aspect-[0.85] shadow-md relative">
+                <Image src="/images.jpeg" alt="Event" fill className="object-cover" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
+
