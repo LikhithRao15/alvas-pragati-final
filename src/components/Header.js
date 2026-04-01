@@ -9,67 +9,162 @@ export default function Header() {
   const [navScrolled, setNavScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setNavScrolled(window.scrollY > 80);
+    const onScroll = () => setNavScrolled(window.scrollY > 50);
     window.addEventListener('scroll', onScroll);
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Prevent scroll when mobile menu is open
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [menuOpen]);
+
   return (
     <>
-      <header id="header" className={`fixed left-0 w-full z-[1000] backdrop-blur-[15px] border-b border-black/5 ${navScrolled ? 'top-0 h-18 bg-white/[0.98] shadow-lg' : 'top-10 h-20 bg-white/[0.85]'} transition-all duration-400`}>
-        <div className="header-inner max-w-7xl mx-auto flex items-center justify-between h-full px-10">
-          <Link href="/" className="brand flex items-center gap-4 no-underline">
-            <div className="brand-logo w-15 h-15 overflow-hidden rounded-full">
+      <header
+        className={`fixed left-0 w-full z-[1000] transition-all duration-300 ${
+          navScrolled
+            ? 'top-0 h-20 bg-white/85 backdrop-blur-md shadow-sm border-b border-black/5'
+            : 'top-10 h-24 bg-white/60 backdrop-blur-sm'
+        }`}
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-between h-full px-6 lg:px-10">
+          <Link href="/" className="flex items-center gap-3 lg:gap-4 group no-underline">
+            <div className="w-12 h-12 lg:w-14 lg:h-14 overflow-hidden rounded-full shadow-sm bg-white flex items-center justify-center p-1 transition-transform duration-300 group-hover:scale-105">
               <Image
                 src="/ALVAS LOGO.png"
                 alt="Alvas Pragati Logo"
-                width={60}
-                height={60}
+                width={56}
+                height={56}
                 className="object-contain"
               />
             </div>
-            <div className="brand-text flex flex-col">
-              <div className="brand-name font-heading text-xl font-extrabold text-primary leading-none">Alvas Pragati</div>
-              <div className="brand-sub text-sm text-accent font-semibold uppercase tracking-wider">Connecting Talent</div>
+            <div className="flex flex-col justify-center">
+              <span className="font-heading text-xl lg:text-3xl font-extrabold text-primary leading-none tracking-tight">
+                Alvas Pragati
+              </span>
+              <span className="text-[10px] lg:text-xs text-accent font-bold uppercase tracking-[0.2em] mt-1">
+                Connecting Talent
+              </span>
             </div>
           </Link>
 
-          <nav id="main-nav" className="hidden lg:flex items-center gap-2">
-            <Link href="/" className="nav-link">Home</Link>
-            <div className="nav-dropdown relative group">
-              <span className="nav-link inline-flex items-center gap-1">About <i className="fas fa-chevron-down caret"></i></span>
-              <div className="nav-dropdown-menu absolute top-full left-0 bg-white border border-glass-border rounded-3xl shadow-lg min-w-[260px] p-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible pointer-events-none group-hover:pointer-events-auto mt-4">
-                <Link href="/about-pragati" className="dropdown-item">• Pragati</Link>
-                <a className="dropdown-item" href="#">• AEF</a>
-                <Link href="/chairman-message" className="dropdown-item">• Chairman's Message</Link>
-                <Link href="/trustee-message" className="dropdown-item">• Trustee's Message</Link>
+          {/* Desktop Nav */}
+          <nav className="hidden xl:flex items-center gap-8 font-main text-sm font-semibold">
+            <Link
+              href="/"
+              className="text-text-main hover:text-accent transition-colors duration-200"
+            >
+              Home
+            </Link>
+            
+            <div className="relative group p-2 -m-2">
+              <button className="flex items-center gap-1.5 text-text-main group-hover:text-accent transition-colors duration-200 focus:outline-none font-semibold">
+                About
+                <svg className="w-4 h-4 transition-transform duration-200 group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              <div className="absolute top-full left-1/2 -translate-x-1/2 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
+                <div className="bg-white/95 backdrop-blur-xl rounded-2xl shadow-xl border border-glass-border min-w-[240px] p-2 overflow-hidden flex flex-col gap-1">
+                  <Link href="/about-pragati" className="px-5 py-3 rounded-xl hover:bg-slate-50 text-text-main hover:text-accent transition-all duration-200 font-medium whitespace-nowrap">
+                    Pragati
+                  </Link>
+                  <a href="#" className="px-5 py-3 rounded-xl hover:bg-slate-50 text-text-main hover:text-accent transition-all duration-200 font-medium whitespace-nowrap">
+                    AEF
+                  </a>
+                  <Link href="/chairman-message" className="px-5 py-3 rounded-xl hover:bg-slate-50 text-text-main hover:text-accent transition-all duration-200 font-medium whitespace-nowrap">
+                    Chairman's Message
+                  </Link>
+                  <Link href="/trustee-message" className="px-5 py-3 rounded-xl hover:bg-slate-50 text-text-main hover:text-accent transition-all duration-200 font-medium whitespace-nowrap">
+                    Trustee's Message
+                  </Link>
+                </div>
               </div>
             </div>
-            <Link href="#companies" className="nav-link">Companies</Link>
-            <Link href="/candidate-registration" className="nav-link">Candidate Registration</Link>
-            <Link href="/company-registration" className="nav-link">Company Registration</Link>
-            <Link href="#" className="nav-link">Result</Link>
-            <Link href="/contact" className="nav-link">Contact</Link>
+
+            <Link href="#companies" className="text-text-main hover:text-accent transition-colors duration-200">Companies</Link>
+            <Link href="/candidate-registration" className="text-text-main hover:text-accent transition-colors duration-200">Candidate Registration</Link>
+            <Link href="/company-registration" className="text-text-main hover:text-accent transition-colors duration-200">Company Registration</Link>
+            <Link href="#" className="text-text-main hover:text-accent transition-colors duration-200">Result</Link>
+            
+            <Link 
+              href="/contact" 
+              className="ml-2 px-7 py-2.5 bg-primary text-white font-medium rounded-full hover:bg-accent transition-all duration-300 transform hover:-translate-y-[2px] shadow-sm hover:shadow-md"
+            >
+              Contact Us
+            </Link>
           </nav>
 
-          <button className="menu-btn lg:hidden" onClick={() => setMenuOpen((s) => !s)}>
-            <i className="fas fa-bars"></i>
+          {/* Mobile Menu Toggle */}
+          <button
+            className="xl:hidden relative z-[1001] w-12 h-12 rounded-full hover:bg-slate-100 flex flex-col items-center justify-center gap-[5px] focus:outline-none transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
+          >
+            <span className={`block w-6 h-[2px] bg-primary transition-transform duration-300 origin-center ${menuOpen ? 'rotate-45 translate-y-[7px]' : ''}`}></span>
+            <span className={`block w-5 h-[2px] bg-primary transition-all duration-200 ${menuOpen ? 'opacity-0 translate-x-4' : 'opacity-100 mr-1'}`}></span>
+            <span className={`block w-6 h-[2px] bg-primary transition-transform duration-300 origin-center ${menuOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}></span>
           </button>
         </div>
       </header>
 
-      <div className={`mobile-nav lg:hidden ${menuOpen ? 'open' : ''}`} id="mobile-nav">
-        <button className="mobile-nav-close" onClick={() => setMenuOpen(false)}>
-          <i className="fas fa-times"></i>
-        </button>
-        <Link href="/" className="nav-link" onClick={() => setMenuOpen(false)}>Home</Link>
-        <Link href="/about-pragati" className="nav-link" onClick={() => setMenuOpen(false)}>About</Link>
-        <Link href="#companies" className="nav-link" onClick={() => setMenuOpen(false)}>Companies</Link>
-        <Link href="/candidate-registration" className="nav-link" onClick={() => setMenuOpen(false)}>Candidate Registration</Link>
-        <Link href="/company-registration" className="nav-link" onClick={() => setMenuOpen(false)}>Company Registration</Link>
-        <Link href="#" className="nav-link" onClick={() => setMenuOpen(false)}>Result</Link>
-        <Link href="/contact" className="nav-link" onClick={() => setMenuOpen(false)}>Contact</Link>
+      {/* Mobile Nav Overlay */}
+      <div
+        className={`fixed inset-0 bg-white/95 backdrop-blur-xl z-[999] xl:hidden transition-all duration-500 overflow-y-auto ${
+          menuOpen ? 'opacity-100 visible' : 'opacity-0 invisible pointer-events-none'
+        }`}
+      >
+        <div 
+          className={`flex flex-col items-center justify-start min-h-full gap-5 px-6 font-main text-lg py-32 transition-transform duration-500 delay-100 ${
+            menuOpen ? 'translate-y-0' : 'translate-y-12'
+          }`}
+        >
+          <Link href="/" className="text-2xl font-bold text-primary hover:text-accent transition-colors" onClick={() => setMenuOpen(false)}>
+            Home
+          </Link>
+          
+          <div className="w-full max-w-sm bg-slate-50/80 rounded-3xl p-6 flex flex-col items-center gap-4 my-2 border border-slate-100">
+             <span className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">About Us</span>
+             <Link href="/about-pragati" className="text-lg font-medium text-text-main hover:text-accent transition-colors text-center w-full" onClick={() => setMenuOpen(false)}>
+               Pragati
+             </Link>
+             <a href="#" className="text-lg font-medium text-text-main hover:text-accent transition-colors text-center w-full" onClick={() => setMenuOpen(false)}>
+               AEF
+             </a>
+             <Link href="/chairman-message" className="text-lg font-medium text-text-main hover:text-accent transition-colors text-center w-full" onClick={() => setMenuOpen(false)}>
+               Chairman's Message
+             </Link>
+             <Link href="/trustee-message" className="text-lg font-medium text-text-main hover:text-accent transition-colors text-center w-full" onClick={() => setMenuOpen(false)}>
+               Trustee's Message
+             </Link>
+          </div>
+
+          <Link href="#companies" className="text-2xl font-bold text-primary hover:text-accent transition-colors" onClick={() => setMenuOpen(false)}>
+            Companies
+          </Link>
+          <Link href="/candidate-registration" className="text-2xl font-bold text-primary hover:text-accent transition-colors" onClick={() => setMenuOpen(false)}>
+            Candidate Registration
+          </Link>
+          <Link href="/company-registration" className="text-2xl font-bold text-primary hover:text-accent transition-colors" onClick={() => setMenuOpen(false)}>
+            Company Registration
+          </Link>
+          <Link href="#" className="text-2xl font-bold text-primary hover:text-accent transition-colors" onClick={() => setMenuOpen(false)}>
+            Result
+          </Link>
+          <Link href="/contact" className="text-xl font-bold px-10 py-4 bg-primary text-white rounded-full mt-6 shadow-md hover:bg-accent transition-colors w-full max-w-sm text-center" onClick={() => setMenuOpen(false)}>
+            Contact Us
+          </Link>
+        </div>
       </div>
     </>
   );
