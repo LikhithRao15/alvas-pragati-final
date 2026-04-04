@@ -92,9 +92,9 @@ export default function Header() {
               </div>
             </div>
 
-            <Link href="#companies" className="text-text-main hover:text-accent transition-colors duration-200">Companies</Link>
-            <Link href="/candidate-registration" className="text-text-main hover:text-accent transition-colors duration-200">Candidate Registration</Link>
-            <Link href="/company-registration" className="text-text-main hover:text-accent transition-colors duration-200">Company Registration</Link>
+            <Link href="#companies" className="text-text-main hover:text-accent transition-colors duration-200">Participating<br/>Companies</Link>
+            <Link href="/candidate-registration" className="text-text-main hover:text-accent transition-colors duration-200">Candidate<br/>Registration</Link>
+            <Link href="/company-registration" className="text-text-main hover:text-accent transition-colors duration-200">Company <br/>Registration</Link>
             <Link href="#" className="text-text-main hover:text-accent transition-colors duration-200">Result</Link>
             
             <Link 
