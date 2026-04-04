@@ -22,7 +22,7 @@ export default function CompanyRegistration() {
     gender: "Male",
     countryCode: "+91",
     mobileNumber: "",
-    landlineNo: "",
+    companyLogo: null,
     address: "",
     interviewType: "Offline",
 
@@ -72,6 +72,13 @@ export default function CompanyRegistration() {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    if (files && files.length > 0) {
+      setFormData((prev) => ({ ...prev, [name]: files[0] }));
+    }
   };
 
   const handleExecChange = (index, e) => {
@@ -198,8 +205,8 @@ export default function CompanyRegistration() {
                 </div>
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Landline No:</label>
-                <input name="landlineNo" value={formData.landlineNo} onChange={handleInputChange} className={inputStyle} />
+                <label className={labelStyle}>Company Logo:</label>
+                <input name="companyLogo" type="file" accept="image/*" onChange={handleFileChange} className={`${inputStyle} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 text-slate-500`} required />
               </div>
               <div className={`${inputGroup} md:col-span-2`}>
                 <label className={labelStyle}>Address:</label>
