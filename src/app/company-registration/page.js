@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 export default function CompanyRegistration() {
+  const [isReviewMode, setIsReviewMode] = useState(false);
   const [formData, setFormData] = useState({
     // Section 1: Company Profile
     organizationName: "",
@@ -91,16 +92,21 @@ export default function CompanyRegistration() {
     }]);
   };
 
+  const handleReview = (e) => {
+    e.preventDefault();
+    setIsReviewMode(true);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleFinalSubmit = () => {
+    alert("Company registration details submitted successfully!");
+    console.log("Final Submission Data:", { formData, executives, openings });
+  };
+
   const handleClear = () => {
     if (confirm("Clear all form data?")) {
       window.location.reload();
     }
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    alert("Company registration data submitted successfully!");
-    console.log({ ...formData, executives, openings });
   };
 
   // UI Helpers
@@ -113,6 +119,199 @@ export default function CompanyRegistration() {
   const radioGroup = "flex items-center gap-6 mt-1";
   const radioLabel = "flex items-center gap-2 text-sm text-slate-700 cursor-pointer";
 
+  const ReviewItem = ({ label, value }) => (
+    <div className="flex flex-col border-b border-slate-100 pb-2">
+      <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider mb-1">{label}</span>
+      <span className="text-sm font-semibold text-primary">{value || "N/A"}</span>
+    </div>
+  );
+
+  if (isReviewMode) {
+    return (
+      <main className="min-h-screen bg-slate-50 pt-32 pb-24">
+        <div className="max-w-6xl mx-auto px-6 lg:px-10">
+          <div className="mb-12 text-center">
+            <h1 className="text-4xl font-serif font-bold text-primary mb-4">Review Your Registration</h1>
+            <p className="text-slate-500">Please confirm your company's details before final submission.</p>
+          </div>
+
+          <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 md:p-14 border border-white space-y-12">
+            
+            {/* Company Profile Review */}
+            <section>
+              <h2 className="text-lg font-bold text-accent uppercase tracking-widest mb-6 flex items-center gap-3">
+                <span className="w-8 h-px bg-accent"></span> Company Profile
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <ReviewItem label="Organization Name" value={formData.organizationName} />
+                <ReviewItem label="Sector" value={formData.sector} />
+                <ReviewItem label="Contact Person" value={formData.contactPerson} />
+                <ReviewItem label="Email ID" value={formData.emailId} />
+                <ReviewItem label="Designation" value={formData.designation} />
+                <ReviewItem label="Gender" value={formData.gender} />
+                <ReviewItem label="Mobile Number" value={`${formData.countryCode} ${formData.mobileNumber}`} />
+                <ReviewItem label="Landline No" value={formData.landlineNo} />
+                <ReviewItem label="Interview Type" value={formData.interviewType} />
+                <div className="md:col-span-2 lg:col-span-3">
+                   <ReviewItem label="Address" value={formData.address} />
+                </div>
+              </div>
+            </section>
+
+            {/* Visiting Executives Review */}
+            <section>
+              <h2 className="text-lg font-bold text-accent uppercase tracking-widest mb-6 flex items-center gap-3">
+                <span className="w-8 h-px bg-accent"></span> Visiting Executives
+              </h2>
+              <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead className="bg-slate-50 font-bold text-slate-500 text-[10px] uppercase tracking-wider">
+                    <tr>
+                      <th className="px-6 py-4">Name</th>
+                      <th className="px-6 py-4">Designation</th>
+                      <th className="px-6 py-4">Mobile</th>
+                      <th className="px-6 py-4">Email</th>
+                      <th className="px-6 py-4">Gender</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {executives.map((exec, idx) => (
+                      <tr key={idx}>
+                        <td className="px-6 py-4 font-bold text-primary">{exec.name}</td>
+                        <td className="px-6 py-4">{exec.designation}</td>
+                        <td className="px-6 py-4">{exec.mobile}</td>
+                        <td className="px-6 py-4">{exec.email}</td>
+                        <td className="px-6 py-4">{exec.gender}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Logistics Review */}
+            <section>
+              <h2 className="text-lg font-bold text-accent uppercase tracking-widest mb-6 flex items-center gap-3">
+                <span className="w-8 h-px bg-accent"></span> Logistics & Accommodation
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                  <h3 className="text-xs font-bold text-slate-400 uppercase mb-4">Accommodation</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <ReviewItem label="Required" value={formData.accRequired} />
+                    {formData.accRequired === "Yes" && (
+                      <>
+                        <ReviewItem label="Male Execs" value={formData.maleExecutives} />
+                        <ReviewItem label="Female Execs" value={formData.femaleExecutives} />
+                        <ReviewItem label="Check-in" value={formData.checkInDate} />
+                        <ReviewItem label="Check-out" value={formData.checkOutDate} />
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                  <h3 className="text-xs font-bold text-slate-400 uppercase mb-4">Transportation</h3>
+                   <div className="grid grid-cols-2 gap-4">
+                    <ReviewItem label="Required" value={formData.transRequired} />
+                    {formData.transRequired === "Yes" && (
+                      <>
+                        <ReviewItem label="From" value={formData.fromLocation} />
+                        <ReviewItem label="To" value={formData.toLocation} />
+                        <ReviewItem label="Pick-up" value={`${formData.pickUpDate} ${formData.pickUpTime}`} />
+                        <ReviewItem label="No of Execs" value={formData.numExecs} />
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Facilities Review */}
+            <section>
+              <h2 className="text-lg font-bold text-accent uppercase tracking-widest mb-6 flex items-center gap-3">
+                <span className="w-8 h-px bg-accent"></span> Facilities & Infrastructure
+              </h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <ReviewItem label="Interview Rooms" value={formData.interviewRooms} />
+                <ReviewItem label="Interview Panels" value={formData.interviewPanels} />
+                <ReviewItem label="Online Exam" value={formData.onlineExam} />
+                {formData.onlineExam === "Yes" && (
+                  <>
+                    <ReviewItem label="No of Computers" value={formData.numComputers} />
+                    <ReviewItem label="Specs" value={formData.systemSpec} />
+                  </>
+                )}
+                <ReviewItem label="Written Exam" value={formData.writtenExam} />
+                {formData.writtenExam === "Yes" && (
+                   <>
+                    <ReviewItem label="Volunteers" value={formData.numVolunteers} />
+                    <ReviewItem label="Seating" value={formData.seatingCapacity} />
+                  </>
+                )}
+                 <ReviewItem label="Group Discussion" value={formData.groupDiscussion} />
+              </div>
+            </section>
+
+            {/* Openings Review */}
+            <section>
+              <h2 className="text-lg font-bold text-accent uppercase tracking-widest mb-6 flex items-center gap-3">
+                <span className="w-8 h-px bg-accent"></span> Current Openings
+              </h2>
+              <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm">
+                <table className="w-full text-left text-[10px] border-collapse min-w-[1000px]">
+                  <thead className="bg-primary/5 font-bold text-primary uppercase">
+                    <tr>
+                      <th className="px-4 py-4">Vacancies</th>
+                      <th className="px-4 py-4">Designation</th>
+                      <th className="px-4 py-4">Qualification</th>
+                      <th className="px-4 py-4">Course/Stream</th>
+                      <th className="px-4 py-4">CTC Range</th>
+                      <th className="px-4 py-4">Cut Off</th>
+                      <th className="px-4 py-4">Location</th>
+                      <th className="px-4 py-4">Exp</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100">
+                    {openings.map((op, idx) => (
+                      <tr key={idx}>
+                        <td className="px-4 py-4 font-bold text-primary">{op.vacancies}</td>
+                        <td className="px-4 py-4 font-semibold">{op.designation}</td>
+                        <td className="px-4 py-4">{op.qualification}</td>
+                        <td className="px-4 py-4">{op.course} {op.stream && `(${op.stream})`}</td>
+                        <td className="px-4 py-4 text-accent font-bold">{op.fromCTC} - {op.toCTC} L/A</td>
+                        <td className="px-4 py-4">{op.cutOff}</td>
+                        <td className="px-4 py-4">{op.jobLocation}</td>
+                        <td className="px-4 py-4">{op.expFrom} - {op.expTo} Years</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            {/* Review Actions */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 pt-12 border-t border-slate-100 mt-12">
+              <button 
+                type="button" 
+                onClick={() => { setIsReviewMode(false); window.scrollTo({ top: 0, behavior: "smooth" }); }} 
+                className="w-full sm:w-auto px-12 py-4 rounded-full border-2 border-primary text-primary font-bold uppercase tracking-widest text-xs hover:bg-primary hover:text-white transition-all transform hover:-translate-y-1 focus:outline-none"
+              >
+                Back to Edit
+              </button>
+              <button 
+                type="button" 
+                onClick={handleFinalSubmit} 
+                className="w-full sm:w-auto px-16 py-4 rounded-full bg-accent text-white font-bold uppercase tracking-widest text-xs shadow-2xl shadow-accent/30 hover:bg-accent-light transition-all transform hover:-translate-y-1 focus:outline-none"
+              >
+                Confirm & Submit
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   return (
     <main className="min-h-screen bg-slate-50 pt-32 pb-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -123,7 +322,7 @@ export default function CompanyRegistration() {
           <p className="text-slate-500 font-medium">Please fill in the comprehensive details below to register for the placement drive.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-8 md:p-14 border border-white">
+        <form onSubmit={handleReview} className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-8 md:p-14 border border-white">
           
           {/* Section 1: Company Profile */}
           <section>
@@ -494,7 +693,7 @@ export default function CompanyRegistration() {
               Clear All Details
             </button>
             <button type="submit" className="px-12 py-4 rounded-full bg-primary text-white font-bold uppercase tracking-widest text-xs shadow-2xl shadow-primary/30 hover:bg-primary-light transition-all transform hover:-translate-y-1 focus:outline-none">
-              Submit Registration
+              Review & Submit
             </button>
           </div>
         </form>
@@ -502,4 +701,3 @@ export default function CompanyRegistration() {
     </main>
   );
 }
-
