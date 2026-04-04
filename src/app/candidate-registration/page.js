@@ -17,8 +17,8 @@ export default function CandidateRegistration() {
     // Section 2: Academic Details - Individual States for clarity
     sslc: { mode: "Regular", year: "", marks: "" },
     puc: { course: "", mode: "Regular", year: "", marks: "" },
-    iti: { mode: "Regular", year: "", marks: "" },
-    diploma: { mode: "Regular", year: "", marks: "" },
+    iti: { course: "", mode: "Regular", year: "", marks: "" },
+    diploma: { course: "", mode: "Regular", year: "", marks: "" },
     degree: { course: "", stream: "", mode: "Regular", year: "", marks: "" },
     pg: { course: "", stream: "", mode: "Regular", year: "", marks: "" },
 
@@ -139,7 +139,7 @@ export default function CandidateRegistration() {
                     ].map((item, idx) => (
                       <tr key={idx} className="text-xs">
                         <td className="px-6 py-4 font-bold">{item.l}</td>
-                        <td className="px-6 py-4">{item.d.course || (item.d.stream ? `${item.d.stream}` : "Standardized")} {item.d.stream && `(${item.d.stream})`}</td>
+                        <td className="px-6 py-4">{item.d.course || (item.d.stream ? `${item.d.stream}` : "N/A")} {item.d.stream && `(${item.d.stream})`}</td>
                         <td className="px-6 py-4">{item.d.mode}</td>
                         <td className="px-6 py-4">{item.d.year}</td>
                         <td className="px-6 py-4 font-semibold text-accent">{item.d.marks}</td>
@@ -303,7 +303,23 @@ export default function CandidateRegistration() {
                   {/* ITI */}
                   <tr className="hover:bg-slate-50/30 transition-colors">
                     <td className="px-6 py-4 font-bold text-primary">ITI</td>
-                    <td className="px-6 py-4 text-slate-400 italic text-xs">Standardized</td>
+                    <td className="px-6 py-4">
+                      <select value={formData.iti.course} onChange={(e) => handleAcademicChange("iti", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                        <option value="">Select Trade</option>
+                        <option>Fitter</option>
+                        <option>Electrician</option>
+                        <option>Machinist</option>
+                        <option>Welder</option>
+                        <option>Diesel Mechanic</option>
+                        <option>Turner</option>
+                        <option>Instrument Mechanic</option>
+                        <option>Draftsman (Mechanical)</option>
+                        <option>Draftsman (Civil)</option>
+                        <option>Refrigeration and AC Mechanic</option>
+                        <option>Electronics Mechanic</option>
+                        <option>Computer Operator and Programming Assistant (COPA)</option>
+                      </select>
+                    </td>
                     <td className="px-6 py-4">
                       <select name="iti-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("iti", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
                         <option>Regular</option>
@@ -316,7 +332,23 @@ export default function CandidateRegistration() {
                   {/* Diploma */}
                   <tr className="hover:bg-slate-50/30 transition-colors">
                     <td className="px-6 py-4 font-bold text-primary">Diploma</td>
-                    <td className="px-6 py-4 text-slate-400 italic text-xs">Standardized</td>
+                    <td className="px-6 py-4">
+                      <select value={formData.diploma.course} onChange={(e) => handleAcademicChange("diploma", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                        <option value="">Select Branch</option>
+                        <option>Mechanical Engineering</option>
+                        <option>Civil Engineering</option>
+                        <option>Computer Science & Engineering</option>
+                        <option>Electrical & Electronics Engineering</option>
+                        <option>Electronics & Communication Engineering</option>
+                        <option>Information Technology</option>
+                        <option>Automobile Engineering</option>
+                        <option>Mechatronics Engineering</option>
+                        <option>Chemical Engineering</option>
+                        <option>Aeronautical Engineering</option>
+                        <option>Fashion Design</option>
+                        <option>Interior Design</option>
+                      </select>
+                    </td>
                     <td className="px-6 py-4">
                       <select name="diploma-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("diploma", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
                         <option>Regular</option>

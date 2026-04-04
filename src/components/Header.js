@@ -37,23 +37,29 @@ export default function Header() {
         }`}
       >
         <div className="max-w-7xl mx-auto flex items-center justify-between h-full px-6 lg:px-10">
-          <Link href="/" className="flex items-center gap-3 lg:gap-4 group no-underline">
-            <div className="w-12 h-12 lg:w-14 lg:h-14 overflow-hidden rounded-full shadow-sm bg-white flex items-center justify-center p-1 transition-transform duration-300 group-hover:scale-105">
-              <Image
-                src="/ALVAS LOGO.png"
-                alt="Alvas Pragati Logo"
-                width={56}
-                height={56}
-                className="object-contain"
-              />
-            </div>
-            <div className="flex flex-col justify-center">
-              <span className="font-heading text-xl lg:text-3xl font-extrabold text-primary leading-none tracking-tight">
-                Alvas Pragati
-              </span>
-              <span className="text-[10px] lg:text-xs text-accent font-bold uppercase tracking-[0.2em] mt-1">
-                Connecting Talent
-              </span>
+          <Link href="/" className="flex items-center gap-4 lg:gap-8 group no-underline">
+            <div className="flex items-center gap-4 lg:gap-6 transition-all duration-300 group-hover:scale-[1.02]">
+              <div className="relative h-12 w-auto lg:h-16 flex items-center">
+                <Image
+                  src="/pragathi.png"
+                  alt="Pragathi Logo"
+                  width={180}
+                  height={80}
+                  className="h-full w-auto object-contain drop-shadow-sm"
+                  priority
+                />
+              </div>
+              <div className="w-px h-10 lg:h-12 bg-black/10 hidden sm:block"></div>
+              <div className="relative h-11 w-auto lg:h-14 flex items-center">
+                <Image
+                  src="/alva's.png"
+                  alt="Alva's Logo"
+                  width={150}
+                  height={60}
+                  className="h-full w-auto object-contain drop-shadow-sm"
+                  priority
+                />
+              </div>
             </div>
           </Link>
 
