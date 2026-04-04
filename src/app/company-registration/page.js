@@ -2,6 +2,15 @@
 
 import { useState } from "react";
 
+const courseMapping = {
+  "SSLC": ["NA"],
+  "PUC": ["Science", "Commerce", "Arts"],
+  "ITI": ["Fitter", "Electrician", "Mechanic", "Welder", "Turner", "Machinist", "Other"],
+  "Diploma": ["3D Animation", "Aeronautical", "Agriculture", "Animation", "Architecture", "Automobile", "Civil", "Computer Science", "Electrical", "Electronics", "Mechanical", "Other"],
+  "Degree": ["B.E/B.Tech", "B.Sc", "B.Com", "B.A", "B.B.A", "B.C.A", "B.Pharm", "Other"],
+  "PG": ["M.E/M.Tech", "M.Sc", "M.Com", "M.A", "M.B.A", "M.C.A", "M.Pharm", "Other"],
+  "Doctorate": ["Ph.D", "M.Phil", "Other"]
+};
 export default function CompanyRegistration() {
   const [formData, setFormData] = useState({
     // Section 1: Company Profile
@@ -80,6 +89,9 @@ export default function CompanyRegistration() {
     const { name, value } = e.target;
     const newOpenings = [...openings];
     newOpenings[index][name] = value;
+    if (name === "qualification") {
+      newOpenings[index].course = "";
+    }
     setOpenings(newOpenings);
   };
 
@@ -138,12 +150,22 @@ export default function CompanyRegistration() {
               <div className={inputGroup}>
                 <label className={labelStyle}>Sector:</label>
                 <select name="sector" value={formData.sector} onChange={handleInputChange} className={selectStyle}>
+                  <option>Automobile</option>
+                  <option>Banking & Finance</option>
                   <option>Construction</option>
+                  <option>Defence</option>
+                  <option>Education NGO</option>
+                  <option>Healthcare </option>
+                  <option>Hospitality </option>
+                  <option>HR Consultancy </option>
+                  <option>Infrastructure</option>
                   <option>IT/Software</option>
                   <option>Manufacturing</option>
-                  <option>Healthcare</option>
-                  <option>Finance</option>
-                  <option>Education</option>
+                  <option>Media</option>
+                  <option>Pharmaceuticals</option>
+                  <option>Reatail & Sales</option>
+                  <option>Telecom</option>
+                  <option>Other</option>
                 </select>
               </div>
               <div className={inputGroup}>
@@ -316,16 +338,7 @@ export default function CompanyRegistration() {
             <div className={sectionHeader}>
               <h2 className={sectionTitle}>Facilities Required:</h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 bg-slate-50/50 p-8 rounded-3xl border border-slate-100">
-               <div className={inputGroup}>
-                 <label className={labelStyle}>*Interview rooms(1000sq ft)</label>
-                 <input name="interviewRooms" value={formData.interviewRooms} onChange={handleInputChange} className={inputStyle} required />
-               </div>
-               <div className={inputGroup}>
-                 <label className={labelStyle}>*Interview panels</label>
-                 <input name="interviewPanels" value={formData.interviewPanels} onChange={handleInputChange} className={inputStyle} required />
-               </div>
-            </div>
+            
             
             <div className="mt-12 space-y-12">
                <div className="border-l-4 border-accent pl-6 py-2">
@@ -424,7 +437,6 @@ export default function CompanyRegistration() {
                     <th className="px-4 py-4 min-w-[120px]">Designation/Position</th>
                     <th className="px-4 py-4 min-w-[130px]">Qualification</th>
                     <th className="px-4 py-4 min-w-[130px]">Course</th>
-                    <th className="px-4 py-4 min-w-[130px]">Stream</th>
                     <th className="px-4 py-4 min-w-[90px]">From CTC(L/A)</th>
                     <th className="px-4 py-4 min-w-[90px]">To CTC(L/A)</th>
                     <th className="px-4 py-4 min-w-[80px]">Cut Off%</th>
@@ -441,25 +453,24 @@ export default function CompanyRegistration() {
                         <td className="px-2 py-3"><input name="designation" value={op.designation} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
                         <td className="px-2 py-3">
                            <select name="qualification" value={op.qualification} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
+                             <option>SSLC</option>
+                             <option>PUC</option>
+                             <option>ITI</option>
+                             <option>Diploma</option>
                              <option>Degree</option>
                              <option>PG</option>
-                             <option>Diploma</option>
+                             <option>Doctorate</option>
                            </select>
                         </td>
                         <td className="px-2 py-3">
-                          <select name="course" value={op.course} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
-                             <option>select Course</option>
-                             <option>B.Pharm</option>
-                             <option>B.Tech</option>
+                          <select name="course" value={op.course} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" disabled={op.qualification === "SSLC"}>
+                             <option value="">{op.qualification === "SSLC" ? "NA" : "Select Course"}</option>
+                             {op.qualification && op.qualification !== "SSLC" && courseMapping[op.qualification]?.map((courseOption, cIdx) => (
+                               <option key={cIdx} value={courseOption}>{courseOption}</option>
+                             ))}
                            </select>
                         </td>
-                        <td className="px-2 py-3">
-                          <select name="stream" value={op.stream} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
-                             <option>Select Stream</option>
-                             <option>CS</option>
-                             <option>Mechanical</option>
-                           </select>
-                        </td>
+
                         <td className="px-2 py-3"><input name="fromCTC" value={op.fromCTC} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
                         <td className="px-2 py-3"><input name="toCTC" value={op.toCTC} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
                         <td className="px-2 py-3"><input name="cutOff" value={op.cutOff} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
@@ -502,4 +513,4 @@ export default function CompanyRegistration() {
     </main>
   );
 }
-
+
