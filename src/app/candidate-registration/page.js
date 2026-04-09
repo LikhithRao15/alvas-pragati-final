@@ -13,6 +13,7 @@ export default function CandidateRegistration() {
     email: "",
     familyIncome: "",
     address: "",
+    resume: null,
 
     // Section 2: Academic Details - Individual States for clarity
     sslc: { mode: "Regular", year: "", marks: "" },
@@ -24,7 +25,9 @@ export default function CandidateRegistration() {
 
     // Section 3: Skills & Aspirations
     technicalSkills: "",
+    otherTechnicalSkills: "",
     languagesKnown: "",
+    otherLanguagesKnown: "",
     industryAspiration: "",
 
     // Section 4: Questions
@@ -32,11 +35,30 @@ export default function CandidateRegistration() {
     shiftWork: "No",
     validPassport: "No",
     validLicense: "No",
+    readyToRelocate: "No",
   });
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type, files } = e.target;
+    if (type === "file") {
+      setFormData((prev) => ({ ...prev, [name]: files && files.length > 0 ? files[0] : null }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
+  };
+
+  const handleCheckboxChange = (e) => {
+    const { name, value, checked } = e.target;
+    setFormData((prev) => {
+      const currentValues = prev[name] ? prev[name].split(", ").filter(Boolean) : [];
+      let newValues;
+      if (checked) {
+        newValues = [...currentValues, value];
+      } else {
+        newValues = currentValues.filter((v) => v !== value);
+      }
+      return { ...prev, [name]: newValues.join(", ") };
+    });
   };
 
   const handleAcademicChange = (section, field, value) => {
@@ -109,6 +131,9 @@ export default function CandidateRegistration() {
                 <div className="md:col-span-2 lg:col-span-3">
                    <ReviewItem label="Address" value={formData.address} />
                 </div>
+                <div className="md:col-span-2 lg:col-span-3">
+                   <ReviewItem label="Resume" value={formData.resume ? formData.resume.name : "Not Provided"} />
+                </div>
               </div>
             </section>
 
@@ -156,8 +181,8 @@ export default function CandidateRegistration() {
                 <span className="w-8 h-px bg-accent"></span> Skills & Aspirations
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <ReviewItem label="Technical Skills" value={formData.technicalSkills} />
-                <ReviewItem label="Languages Known" value={formData.languagesKnown} />
+                <ReviewItem label="Technical Skills" value={[formData.technicalSkills, formData.otherTechnicalSkills].filter(Boolean).join(", ")} />
+                <ReviewItem label="Languages Known" value={[formData.languagesKnown, formData.otherLanguagesKnown].filter(Boolean).join(", ")} />
                 <ReviewItem label="Industry Aspiration" value={formData.industryAspiration} />
               </div>
             </section>
@@ -172,6 +197,7 @@ export default function CandidateRegistration() {
                 <ReviewItem label="Shift Ready" value={formData.shiftWork} />
                 <ReviewItem label="Valid Passport" value={formData.validPassport} />
                 <ReviewItem label="Driving License" value={formData.validLicense} />
+                <ReviewItem label="Ready to Relocate" value={formData.readyToRelocate} />
               </div>
             </section>
 
@@ -246,6 +272,10 @@ export default function CandidateRegistration() {
               <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
                 <label className={labelStyle}>Address:</label>
                 <textarea name="address" value={formData.address} onChange={handleInputChange} rows="2" className={inputStyle} required placeholder="Enter your full permanent address" />
+              </div>
+              <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
+                <label className={labelStyle}>Upload Resume (Optional):</label>
+                <input name="resume" type="file" accept=".pdf,.doc,.docx" onChange={handleInputChange} className="px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm w-full file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-accent/10 file:text-accent hover:file:bg-accent/20 cursor-pointer" />
               </div>
             </div>
           </section>
@@ -370,7 +400,21 @@ export default function CandidateRegistration() {
                         <option>BCA</option>
                         <option>BBA</option>
                       </select>
-                      <input type="text" value={formData.degree.stream} placeholder="Stream (e.g. CS, Mechanical)" onChange={(e) => handleAcademicChange("degree", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]" />
+                      <select value={formData.degree.stream} onChange={(e) => handleAcademicChange("degree", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]">
+                        <option value="">Select Stream</option>
+                        <option>Computer Science & Engineering</option>
+                        <option>Information Science</option>
+                        <option>Electronics & Communication</option>
+                        <option>Mechanical Engineering</option>
+                        <option>Civil Engineering</option>
+                        <option>Electrical & Electronics</option>
+                        <option>Artificial Intelligence</option>
+                        <option>Data Science</option>
+                        <option>Physics / Math / Chemistry</option>
+                        <option>Commerce / Accounting</option>
+                        <option>Business Management</option>
+                        <option>Other</option>
+                      </select>
                     </td>
                     <td className="px-6 py-4">
                       <select name="degree-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("degree", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
@@ -392,7 +436,21 @@ export default function CandidateRegistration() {
                         <option>MCA</option>
                         <option>MBA</option>
                       </select>
-                      <input type="text" value={formData.pg.stream} placeholder="Stream (e.g. Data Science)" onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]" />
+                      <select value={formData.pg.stream} onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]">
+                        <option value="">Select Stream</option>
+                        <option>Data Science</option>
+                        <option>Artificial Intelligence / ML</option>
+                        <option>Computer Science & Engineering</option>
+                        <option>VLSI / Embedded Systems</option>
+                        <option>Thermal Engineering</option>
+                        <option>Structural Engineering</option>
+                        <option>Power Electronics</option>
+                        <option>Business Management (MBA)</option>
+                        <option>Finance</option>
+                        <option>Marketing</option>
+                        <option>Human Resources</option>
+                        <option>Other</option>
+                      </select>
                     </td>
                     <td className="px-6 py-4">
                       <select name="pg-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("pg", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
@@ -414,14 +472,57 @@ export default function CandidateRegistration() {
               <h2 className={sectionTitle}>Skills & Industry Aspirations:</h2>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              <div className={inputGroup}>
+              <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
                 <label className={labelStyle}>Technical Skills:</label>
-                <textarea name="technicalSkills" value={formData.technicalSkills} onChange={handleInputChange} rows="3" className={inputStyle} placeholder="e.g. React, Node.js, Python, AWS" />
-                <p className="text-[10px] text-slate-400 mt-1">Separate skills with commas</p>
+                <div className="flex flex-wrap gap-x-4 gap-y-3 mt-1 bg-slate-50/50 p-4 rounded-xl border border-slate-200">
+                  {["Java", "Python", "C/C++", "JavaScript", "React", "Node.js", "HTML/CSS", "SQL", "NoSQL", "AWS/Cloud", "Machine Learning", "Data Analytics", "UI/UX Design", "AutoCAD", "SolidWorks", "MATLAB"].map(skill => (
+                    <label key={skill} className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm hover:border-accent/30 transition-all">
+                      <input 
+                        type="checkbox" 
+                        name="technicalSkills" 
+                        value={skill} 
+                        checked={formData.technicalSkills ? formData.technicalSkills.split(", ").filter(Boolean).includes(skill) : false} 
+                        onChange={handleCheckboxChange}
+                        className="w-4 h-4 text-accent border-slate-300 rounded focus:ring-accent/30 cursor-pointer"
+                      />
+                      {skill}
+                    </label>
+                  ))}
+                </div>
+                <input 
+                  type="text" 
+                  name="otherTechnicalSkills" 
+                  value={formData.otherTechnicalSkills || ""} 
+                  onChange={handleInputChange} 
+                  placeholder="Other skills " 
+                  className="w-full mt-3 px-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all placeholder:text-slate-300"
+                />
               </div>
-              <div className={inputGroup}>
+              <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
                 <label className={labelStyle}>Languages Known:</label>
-                <textarea name="languagesKnown" value={formData.languagesKnown} onChange={handleInputChange} rows="3" className={inputStyle} placeholder="e.g. English, Kannada, Hindi" />
+                <div className="flex flex-wrap gap-x-4 gap-y-3 mt-1 bg-slate-50/50 p-4 rounded-xl border border-slate-200">
+                  {["English", "Kannada", "Hindi", "Telugu", "Tamil", "Malayalam", "Marathi", "Tulu", "Konkani"].map(lang => (
+                    <label key={lang} className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm hover:border-accent/30 transition-all">
+                      <input 
+                        type="checkbox" 
+                        name="languagesKnown" 
+                        value={lang} 
+                        checked={formData.languagesKnown ? formData.languagesKnown.split(", ").filter(Boolean).includes(lang) : false} 
+                        onChange={handleCheckboxChange}
+                        className="w-4 h-4 text-accent border-slate-300 rounded focus:ring-accent/30 cursor-pointer"
+                      />
+                      {lang}
+                    </label>
+                  ))}
+                </div>
+                <input 
+                  type="text" 
+                  name="otherLanguagesKnown" 
+                  value={formData.otherLanguagesKnown || ""} 
+                  onChange={handleInputChange} 
+                  placeholder="Other languages " 
+                  className="w-full mt-3 px-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all placeholder:text-slate-300"
+                />
               </div>
               <div className={inputGroup}>
                 <label className={labelStyle}>Industry Aspiration:</label>
@@ -472,6 +573,14 @@ export default function CandidateRegistration() {
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="validLicense" value="Yes" checked={formData.validLicense === "Yes"} onChange={handleInputChange} /> Yes</label>
                   <label className={radioLabel}><input type="radio" name="validLicense" value="No" checked={formData.validLicense === "No"} onChange={handleInputChange} /> No</label>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-semibold text-slate-700">Are you ready to relocate?</label>
+                <div className="flex gap-4">
+                  <label className={radioLabel}><input type="radio" name="readyToRelocate" value="Yes" checked={formData.readyToRelocate === "Yes"} onChange={handleInputChange} /> Yes</label>
+                  <label className={radioLabel}><input type="radio" name="readyToRelocate" value="No" checked={formData.readyToRelocate === "No"} onChange={handleInputChange} /> No</label>
                 </div>
               </div>
 

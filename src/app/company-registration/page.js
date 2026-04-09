@@ -16,6 +16,7 @@ export default function CompanyRegistration() {
   const [formData, setFormData] = useState({
     // Section 1: Company Profile
     organizationName: "",
+    companyUrl: "",
     sector: "Construction",
     contactPerson: "",
     emailId: "",
@@ -64,11 +65,12 @@ export default function CompanyRegistration() {
   // Section 5: Current Openings
   const [openings, setOpenings] = useState([
     {
-      vacancies: "", designation: "", qualification: "Degree", course: "", stream: "",
+      vacancies: "", designation: "", qualification: ["Degree"], course: [], stream: "",
       fromCTC: "", toCTC: "", cutOff: "", jobLocation: "", jobDescription: "",
       expFrom: "3", expTo: "7"
     }
   ]);
+  const [openDropdown, setOpenDropdown] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -94,18 +96,25 @@ export default function CompanyRegistration() {
   };
 
   const handleOpeningChange = (index, e) => {
-    const { name, value } = e.target;
+    const { name, value, type, options } = e.target;
     const newOpenings = [...openings];
-    newOpenings[index][name] = value;
+    
+    if (type === "select-multiple") {
+       const selectedValues = Array.from(options).filter(op => op.selected).map(op => op.value);
+       newOpenings[index][name] = selectedValues;
+    } else {
+       newOpenings[index][name] = value;
+    }
+
     if (name === "qualification") {
-      newOpenings[index].course = "";
+      newOpenings[index].course = [];
     }
     setOpenings(newOpenings);
   };
 
   const addOpening = () => {
     setOpenings([...openings, {
-      vacancies: "", designation: "", qualification: "Degree", course: "", stream: "",
+      vacancies: "", designation: "", qualification: ["Degree"], course: [], stream: "",
       fromCTC: "", toCTC: "", cutOff: "", jobLocation: "", jobDescription: "",
       expFrom: "3", expTo: "7"
     }]);
@@ -133,6 +142,18 @@ export default function CompanyRegistration() {
   const radioGroup = "flex items-center gap-6 mt-1";
   const radioLabel = "flex items-center gap-2 text-sm text-slate-700 cursor-pointer";
 
+  const getAvailableCourses = (qualifications) => {
+    if (!qualifications) return [];
+    if (!Array.isArray(qualifications)) qualifications = [qualifications];
+    let courses = [];
+    qualifications.forEach(q => {
+      if (courseMapping[q] && q !== "SSLC") {
+        courses = [...courses, ...courseMapping[q]];
+      }
+    });
+    return [...new Set(courses)];
+  };
+
   return (
     <main className="min-h-screen bg-slate-50 pt-32 pb-24">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
@@ -156,18 +177,22 @@ export default function CompanyRegistration() {
                 <input name="organizationName" value={formData.organizationName} onChange={handleInputChange} className={inputStyle} required />
               </div>
               <div className={inputGroup}>
+                <label className={labelStyle}>Company URL (Optional):</label>
+                <input name="companyUrl" type="url" value={formData.companyUrl} onChange={handleInputChange} className={inputStyle} placeholder="https://www.example.com" />
+              </div>
+              <div className={inputGroup}>
                 <label className={labelStyle}>Sector:</label>
                 <select name="sector" value={formData.sector} onChange={handleInputChange} className={selectStyle}>
-                  <option>Automobile</option>
                   <option>Banking & Finance</option>
                   <option>Construction</option>
                   <option>Defence</option>
-                  <option>Education NGO</option>
+                  <option>Education/NGO</option>
                   <option>Healthcare </option>
                   <option>Hospitality </option>
                   <option>HR Consultancy </option>
                   <option>Infrastructure</option>
-                  <option>IT/Software</option>
+                  <option>IT/ITES</option>
+                  <option>Logistics</option>
                   <option>Manufacturing</option>
                   <option>Media</option>
                   <option>Pharmaceuticals</option>
@@ -267,7 +292,7 @@ export default function CompanyRegistration() {
             {/* Accommodation */}
             <section className="bg-slate-50/50 p-8 rounded-3xl border border-slate-100">
               <div className="flex items-center justify-between mb-8 border-b border-slate-200 pb-3">
-                <h3 className="font-bold text-primary tracking-tight">Accommodation Details (hostel will be provided):</h3>
+                <h3 className="font-bold text-primary tracking-tight">Accommodation Details :</h3>
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="accRequired" value="Yes" checked={formData.accRequired === "Yes"} onChange={handleInputChange} /> Yes</label>
                   <label className={radioLabel}><input type="radio" name="accRequired" value="No" checked={formData.accRequired === "No"} onChange={handleInputChange} /> No</label>
@@ -368,8 +393,12 @@ export default function CompanyRegistration() {
                           <input name="numComputers" value={formData.numComputers} onChange={handleInputChange} type="number" className={inputStyle} required />
                         </div>
                         <div className={inputGroup}>
-                          <label className={labelStyle}>System Specification</label>
-                          <input name="systemSpec" value={formData.systemSpec} onChange={handleInputChange} className={inputStyle} />
+                          <label className={labelStyle}>No of Headphones</label>
+                          <input name="numHeadphones" value={formData.numHeadphones} onChange={handleInputChange} className={inputStyle} />
+                        </div>
+                        <div className={inputGroup}>
+                          <label className={labelStyle}>No of Webcams</label>
+                          <input name="numWebcams" value={formData.numWebcams} onChange={handleInputChange} className={inputStyle} />
                         </div>
                       </div>
                     )}
@@ -386,16 +415,13 @@ export default function CompanyRegistration() {
                     {formData.writtenExam === "Yes" && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                         <div className={inputGroup}>
-                          <label className={labelStyle}>*No of Volunteers</label>
-                          <input name="numVolunteers" value={formData.numVolunteers} onChange={handleInputChange} type="number" className={inputStyle} required />
-                        </div>
-                        <div className={inputGroup}>
                           <label className={labelStyle}>*Seating Capacity</label>
                           <select name="seatingCapacity" value={formData.seatingCapacity} onChange={handleInputChange} className={selectStyle}>
                             <option>Please Select</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>75</option>
                             <option>100</option>
-                            <option>200</option>
-                            <option>500</option>
                           </select>
                         </div>
                       </div>
@@ -437,8 +463,8 @@ export default function CompanyRegistration() {
               </button>
             </div>
             <p className="text-[10px] text-slate-400 font-bold mb-4">*Please mark NA for cut off percentage if not required.</p>
-            <div className="overflow-x-auto rounded-3xl border border-slate-100 shadow-sm scrollbar-hide">
-              <table className="w-full text-left text-[11px] border-collapse min-w-[1200px]">
+            <div className="w-full overflow-visible rounded-3xl border border-slate-100 shadow-sm">
+              <table className="w-full text-left text-[11px] border-collapse">
                 <thead className="bg-primary/5 border-b border-primary/10 font-bold text-primary uppercase">
                   <tr>
                     <th className="px-4 py-4 min-w-[80px]">No of Vacancies</th>
@@ -459,24 +485,73 @@ export default function CompanyRegistration() {
                     <tr key={idx} className="hover:bg-slate-50 transition-colors">
                       <td className="px-2 py-3"><input name="vacancies" value={op.vacancies} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
                       <td className="px-2 py-3"><input name="designation" value={op.designation} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
-                      <td className="px-2 py-3">
-                        <select name="qualification" value={op.qualification} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
-                          <option>SSLC</option>
-                          <option>PUC</option>
-                          <option>ITI</option>
-                          <option>Diploma</option>
-                          <option>Degree</option>
-                          <option>PG</option>
-                          <option>Doctorate</option>
-                        </select>
+                      <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
+                        <div 
+                          onClick={() => setOpenDropdown(openDropdown === `qual-${idx}` ? null : `qual-${idx}`)}
+                          className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px]"
+                        >
+                          <span className="truncate pr-1 block w-[100px]">
+                            {Array.isArray(op.qualification) && op.qualification.length > 0 ? op.qualification.join(", ") : "Select"}
+                          </span>
+                          <span className="text-slate-400">▼</span>
+                        </div>
+                        {openDropdown === `qual-${idx}` && (
+                          <div className="absolute z-50 left-2 top-11 w-40 bg-white border border-slate-200 rounded-lg shadow-2xl p-2 space-y-1">
+                            {["SSLC", "PUC", "ITI", "Diploma", "Degree", "PG", "Doctorate"].map(q => {
+                              const isChecked = Array.isArray(op.qualification) ? op.qualification.includes(q) : op.qualification === q;
+                              return (
+                                <label key={q} className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 py-1 rounded px-1">
+                                  <input 
+                                    type="checkbox" 
+                                    checked={isChecked} 
+                                    onChange={(e) => {
+                                      let newQuals = Array.isArray(op.qualification) ? [...op.qualification] : (op.qualification ? [op.qualification] : []);
+                                      if (e.target.checked) newQuals.push(q);
+                                      else newQuals = newQuals.filter(v => v !== q);
+                                      handleOpeningChange(idx, { target: { name: "qualification", value: newQuals } });
+                                    }} 
+                                    className="w-3 h-3 text-accent border-slate-300 rounded focus:ring-accent/30"
+                                  />
+                                  {q}
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
                       </td>
-                      <td className="px-2 py-3">
-                        <select name="course" value={op.course} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" disabled={op.qualification === "SSLC"}>
-                          <option value="">{op.qualification === "SSLC" ? "NA" : "Select Course"}</option>
-                          {op.qualification && op.qualification !== "SSLC" && courseMapping[op.qualification]?.map((courseOption, cIdx) => (
-                            <option key={cIdx} value={courseOption}>{courseOption}</option>
-                          ))}
-                        </select>
+                      <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
+                        <div 
+                          onClick={() => { if(getAvailableCourses(op.qualification).length > 0) setOpenDropdown(openDropdown === `course-${idx}` ? null : `course-${idx}`) }}
+                          className={`w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px] ${getAvailableCourses(op.qualification).length === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+                        >
+                          <span className="truncate pr-1 block w-[110px]">
+                             {Array.isArray(op.course) && op.course.length > 0 ? op.course.join(", ") : "Select"}
+                          </span>
+                          <span className="text-slate-400">▼</span>
+                        </div>
+                        {openDropdown === `course-${idx}` && (
+                          <div className="absolute z-50 left-2 top-11 w-48 bg-white border border-slate-200 rounded-lg shadow-2xl p-2 space-y-1">
+                            {getAvailableCourses(op.qualification).map((courseOption, cIdx) => {
+                              const isChecked = Array.isArray(op.course) ? op.course.includes(courseOption) : op.course === courseOption;
+                              return (
+                                <label key={cIdx} className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 py-1 rounded px-1">
+                                  <input 
+                                    type="checkbox" 
+                                    checked={isChecked} 
+                                    onChange={(e) => {
+                                      let newCourses = Array.isArray(op.course) ? [...op.course] : (op.course ? [op.course] : []);
+                                      if (e.target.checked) newCourses.push(courseOption);
+                                      else newCourses = newCourses.filter(v => v !== courseOption);
+                                      handleOpeningChange(idx, { target: { name: "course", value: newCourses } });
+                                    }} 
+                                    className="w-3 h-3 text-accent border-slate-300 rounded focus:ring-accent/30"
+                                  />
+                                  {courseOption}
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
                       </td>
 
                       <td className="px-2 py-3"><input name="fromCTC" value={op.fromCTC} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
