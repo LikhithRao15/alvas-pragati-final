@@ -16,6 +16,7 @@ export default function CandidateRegistration() {
     resume: null,
 
     // Section 2: Academic Details - Individual States for clarity
+    highestQualification: "",
     sslc: { mode: "Regular", year: "", marks: "" },
     puc: { course: "", mode: "Regular", year: "", marks: "" },
     iti: { course: "", mode: "Regular", year: "", marks: "" },
@@ -155,13 +156,33 @@ export default function CandidateRegistration() {
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {[
-                      { l: "SSLC", d: formData.sslc },
-                      { l: "PUC/12th", d: formData.puc },
-                      { l: "ITI", d: formData.iti },
-                      { l: "Diploma", d: formData.diploma },
-                      { l: "Degree", d: formData.degree },
-                      { l: "PG", d: formData.pg },
-                    ].map((item, idx) => (
+                      { l: "SSLC", d: formData.sslc, show: !!formData.highestQualification },
+                      { 
+                        l: "PUC/12th", 
+                        d: formData.puc, 
+                        show: ["PUC", "ITI", "Diploma", "Degree", "PG"].includes(formData.highestQualification) 
+                      },
+                      { 
+                        l: "ITI", 
+                        d: formData.iti, 
+                        show: ["ITI", "Degree", "PG"].includes(formData.highestQualification) 
+                      },
+                      { 
+                        l: "Diploma", 
+                        d: formData.diploma, 
+                        show: ["Diploma", "Degree", "PG"].includes(formData.highestQualification) 
+                      },
+                      { 
+                        l: "Degree", 
+                        d: formData.degree, 
+                        show: ["Degree", "PG"].includes(formData.highestQualification) 
+                      },
+                      { 
+                        l: "PG", 
+                        d: formData.pg, 
+                        show: formData.highestQualification === "PG" 
+                      },
+                    ].filter(item => item.show).map((item, idx) => (
                       <tr key={idx} className="text-xs">
                         <td className="px-6 py-4 font-bold">{item.l}</td>
                         <td className="px-6 py-4">{item.d.course || (item.d.stream ? `${item.d.stream}` : "N/A")} {item.d.stream && `(${item.d.stream})`}</td>
@@ -285,185 +306,222 @@ export default function CandidateRegistration() {
             <div className={sectionHeader}>
               <h2 className={sectionTitle}>Academic Details:</h2>
             </div>
-            <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm mb-6">
-              <table className="w-full text-left text-sm border-collapse min-w-[800px]">
-                <thead className="bg-slate-50/80 border-b border-slate-100 uppercase tracking-wider text-[10px] font-bold text-slate-400">
-                  <tr>
-                    <th className="px-6 py-4 w-1/4">Education Level</th>
-                    <th className="px-6 py-4">Course / Stream</th>
-                    <th className="px-6 py-4">Mode</th>
-                    <th className="px-6 py-4">Year of Passing</th>
-                    <th className="px-6 py-4">Marks / %</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {/* SSLC */}
-                  <tr className="hover:bg-slate-50/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-primary">SSLC</td>
-                    <td className="px-6 py-4 text-slate-400 italic text-xs">Standardized</td>
-                    <td className="px-6 py-4">
-                      <select name="sslc-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("sslc", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option>Regular</option>
-                        <option>Correspondence</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4"><input type="number" value={formData.sslc.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("sslc", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                    <td className="px-6 py-4"><input type="text" value={formData.sslc.marks} placeholder="%" onChange={(e) => handleAcademicChange("sslc", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                  </tr>
-                  {/* PUC */}
-                  <tr className="hover:bg-slate-50/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-primary">PUC / 12th</td>
-                    <td className="px-6 py-4">
-                      <select value={formData.puc.course} onChange={(e) => handleAcademicChange("puc", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option value="">Select Course</option>
-                        <option>Science</option>
-                        <option>Commerce</option>
-                        <option>Arts</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">
-                      <select name="puc-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("puc", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option>Regular</option>
-                        <option>Correspondence</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4"><input type="number" value={formData.puc.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("puc", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                    <td className="px-6 py-4"><input type="text" value={formData.puc.marks} placeholder="%" onChange={(e) => handleAcademicChange("puc", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                  </tr>
-                  {/* ITI */}
-                  <tr className="hover:bg-slate-50/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-primary">ITI</td>
-                    <td className="px-6 py-4">
-                      <select value={formData.iti.course} onChange={(e) => handleAcademicChange("iti", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option value="">Select Trade</option>
-                        <option>Fitter</option>
-                        <option>Electrician</option>
-                        <option>Machinist</option>
-                        <option>Welder</option>
-                        <option>Diesel Mechanic</option>
-                        <option>Turner</option>
-                        <option>Instrument Mechanic</option>
-                        <option>Draftsman (Mechanical)</option>
-                        <option>Draftsman (Civil)</option>
-                        <option>Refrigeration and AC Mechanic</option>
-                        <option>Electronics Mechanic</option>
-                        <option>Computer Operator and Programming Assistant (COPA)</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">
-                      <select name="iti-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("iti", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option>Regular</option>
-                        <option>Correspondence</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4"><input type="number" value={formData.iti.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("iti", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                    <td className="px-6 py-4"><input type="text" value={formData.iti.marks} placeholder="%" onChange={(e) => handleAcademicChange("iti", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                  </tr>
-                  {/* Diploma */}
-                  <tr className="hover:bg-slate-50/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-primary">Diploma</td>
-                    <td className="px-6 py-4">
-                      <select value={formData.diploma.course} onChange={(e) => handleAcademicChange("diploma", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option value="">Select Branch</option>
-                        <option>Mechanical Engineering</option>
-                        <option>Civil Engineering</option>
-                        <option>Computer Science & Engineering</option>
-                        <option>Electrical & Electronics Engineering</option>
-                        <option>Electronics & Communication Engineering</option>
-                        <option>Information Technology</option>
-                        <option>Automobile Engineering</option>
-                        <option>Mechatronics Engineering</option>
-                        <option>Chemical Engineering</option>
-                        <option>Aeronautical Engineering</option>
-                        <option>Fashion Design</option>
-                        <option>Interior Design</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">
-                      <select name="diploma-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("diploma", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option>Regular</option>
-                        <option>Correspondence</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4"><input type="number" value={formData.diploma.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("diploma", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                    <td className="px-6 py-4"><input type="text" value={formData.diploma.marks} placeholder="%" onChange={(e) => handleAcademicChange("diploma", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                  </tr>
-                  {/* Degree */}
-                  <tr className="hover:bg-slate-50/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-primary">Graduation (Degree)</td>
-                    <td className="px-6 py-4 flex flex-col gap-2">
-                      <select value={formData.degree.course} onChange={(e) => handleAcademicChange("degree", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option value="">Select Course</option>
-                        <option>BE / B.Tech</option>
-                        <option>B.Sc</option>
-                        <option>B.Com</option>
-                        <option>BCA</option>
-                        <option>BBA</option>
-                      </select>
-                      <select value={formData.degree.stream} onChange={(e) => handleAcademicChange("degree", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]">
-                        <option value="">Select Stream</option>
-                        <option>Computer Science & Engineering</option>
-                        <option>Information Science</option>
-                        <option>Electronics & Communication</option>
-                        <option>Mechanical Engineering</option>
-                        <option>Civil Engineering</option>
-                        <option>Electrical & Electronics</option>
-                        <option>Artificial Intelligence</option>
-                        <option>Data Science</option>
-                        <option>Physics / Math / Chemistry</option>
-                        <option>Commerce / Accounting</option>
-                        <option>Business Management</option>
-                        <option>Other</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">
-                      <select name="degree-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("degree", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option>Regular</option>
-                        <option>Correspondence</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4"><input type="number" value={formData.degree.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("degree", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                    <td className="px-6 py-4"><input type="text" value={formData.degree.marks} placeholder="%" onChange={(e) => handleAcademicChange("degree", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                  </tr>
-                  {/* PG */}
-                  <tr className="hover:bg-slate-50/30 transition-colors">
-                    <td className="px-6 py-4 font-bold text-primary">Post Graduation</td>
-                    <td className="px-6 py-4 flex flex-col gap-2">
-                       <select value={formData.pg.course} onChange={(e) => handleAcademicChange("pg", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option value="">Select Course</option>
-                        <option>ME / M.Tech</option>
-                        <option>M.Sc</option>
-                        <option>MCA</option>
-                        <option>MBA</option>
-                      </select>
-                      <select value={formData.pg.stream} onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]">
-                        <option value="">Select Stream</option>
-                        <option>Data Science</option>
-                        <option>Artificial Intelligence / ML</option>
-                        <option>Computer Science & Engineering</option>
-                        <option>VLSI / Embedded Systems</option>
-                        <option>Thermal Engineering</option>
-                        <option>Structural Engineering</option>
-                        <option>Power Electronics</option>
-                        <option>Business Management (MBA)</option>
-                        <option>Finance</option>
-                        <option>Marketing</option>
-                        <option>Human Resources</option>
-                        <option>Other</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4">
-                      <select name="pg-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("pg", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
-                        <option>Regular</option>
-                        <option>Correspondence</option>
-                      </select>
-                    </td>
-                    <td className="px-6 py-4"><input type="number" value={formData.pg.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("pg", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                    <td className="px-6 py-4"><input type="text" value={formData.pg.marks} placeholder="%" onChange={(e) => handleAcademicChange("pg", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
-                  </tr>
-                </tbody>
-              </table>
+
+            <div className={`${inputGroup} mb-8 max-w-md`}>
+              <label className={labelStyle}>Highest Qualification:</label>
+              <select 
+                name="highestQualification" 
+                value={formData.highestQualification} 
+                onChange={handleInputChange} 
+                className={selectStyle}
+                required
+              >
+                <option value="" disabled>Select Highest Qualification</option>
+                <option value="SSLC">SSLC</option>
+                <option value="PUC">PUC / 12th</option>
+                <option value="ITI">ITI</option>
+                <option value="Diploma">Diploma</option>
+                <option value="Degree">Degree / Graduation</option>
+                <option value="PG">Post Graduation (PG)</option>
+              </select>
             </div>
+
+            {formData.highestQualification && (
+              <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm mb-6">
+                <table className="w-full text-left text-sm border-collapse min-w-[800px]">
+                  <thead className="bg-slate-50/80 border-b border-slate-100 uppercase tracking-wider text-[10px] font-bold text-slate-400">
+                    <tr>
+                      <th className="px-6 py-4 w-1/4">Education Level</th>
+                      <th className="px-6 py-4">Course / Stream</th>
+                      <th className="px-6 py-4">Mode</th>
+                      <th className="px-6 py-4">Year of Passing</th>
+                      <th className="px-6 py-4">Marks / %</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {/* SSLC - Always show if qualification is selected */}
+                    <tr className="hover:bg-slate-50/30 transition-colors">
+                      <td className="px-6 py-4 font-bold text-primary">SSLC</td>
+                      <td className="px-6 py-4 text-slate-400 italic text-xs">Standardized</td>
+                      <td className="px-6 py-4">
+                        <select name="sslc-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("sslc", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                          <option>Regular</option>
+                          <option>Correspondence</option>
+                        </select>
+                      </td>
+                      <td className="px-6 py-4"><input type="number" value={formData.sslc.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("sslc", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                      <td className="px-6 py-4"><input type="text" value={formData.sslc.marks} placeholder="%" onChange={(e) => handleAcademicChange("sslc", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                    </tr>
+                    
+                    {/* PUC - Show for PUC, ITI, Diploma, Degree and PG */}
+                    {["PUC", "ITI", "Diploma", "Degree", "PG"].includes(formData.highestQualification) && (
+                      <tr className="hover:bg-slate-50/30 transition-colors">
+                        <td className="px-6 py-4 font-bold text-primary">PUC / 12th</td>
+                        <td className="px-6 py-4">
+                          <select value={formData.puc.course} onChange={(e) => handleAcademicChange("puc", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option value="">Select Course</option>
+                            <option>Science</option>
+                            <option>Commerce</option>
+                            <option>Arts</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4">
+                          <select name="puc-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("puc", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option>Regular</option>
+                            <option>Correspondence</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4"><input type="number" value={formData.puc.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("puc", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                        <td className="px-6 py-4"><input type="text" value={formData.puc.marks} placeholder="%" onChange={(e) => handleAcademicChange("puc", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                      </tr>
+                    )}
+
+                    {/* ITI - Show for ITI, Degree and PG */}
+                    {["ITI", "Degree", "PG"].includes(formData.highestQualification) && (
+                      <tr className="hover:bg-slate-50/30 transition-colors">
+                        <td className="px-6 py-4 font-bold text-primary">ITI</td>
+                        <td className="px-6 py-4">
+                          <select value={formData.iti.course} onChange={(e) => handleAcademicChange("iti", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option value="">Select Trade</option>
+                            <option>Fitter</option>
+                            <option>Electrician</option>
+                            <option>Machinist</option>
+                            <option>Welder</option>
+                            <option>Diesel Mechanic</option>
+                            <option>Turner</option>
+                            <option>Instrument Mechanic</option>
+                            <option>Draftsman (Mechanical)</option>
+                            <option>Draftsman (Civil)</option>
+                            <option>Refrigeration and AC Mechanic</option>
+                            <option>Electronics Mechanic</option>
+                            <option>Computer Operator and Programming Assistant (COPA)</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4">
+                          <select name="iti-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("iti", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option>Regular</option>
+                            <option>Correspondence</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4"><input type="number" value={formData.iti.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("iti", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                        <td className="px-6 py-4"><input type="text" value={formData.iti.marks} placeholder="%" onChange={(e) => handleAcademicChange("iti", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                      </tr>
+                    )}
+
+                    {/* Diploma - Show for Diploma, Degree and PG */}
+                    {["Diploma", "Degree", "PG"].includes(formData.highestQualification) && (
+                      <tr className="hover:bg-slate-50/30 transition-colors">
+                        <td className="px-6 py-4 font-bold text-primary">Diploma</td>
+                        <td className="px-6 py-4">
+                          <select value={formData.diploma.course} onChange={(e) => handleAcademicChange("diploma", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option value="">Select Branch</option>
+                            <option>Mechanical Engineering</option>
+                            <option>Civil Engineering</option>
+                            <option>Computer Science & Engineering</option>
+                            <option>Electrical & Electronics Engineering</option>
+                            <option>Electronics & Communication Engineering</option>
+                            <option>Information Technology</option>
+                            <option>Automobile Engineering</option>
+                            <option>Mechatronics Engineering</option>
+                            <option>Chemical Engineering</option>
+                            <option>Aeronautical Engineering</option>
+                            <option>Fashion Design</option>
+                            <option>Interior Design</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4">
+                          <select name="diploma-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("diploma", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option>Regular</option>
+                            <option>Correspondence</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4"><input type="number" value={formData.diploma.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("diploma", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                        <td className="px-6 py-4"><input type="text" value={formData.diploma.marks} placeholder="%" onChange={(e) => handleAcademicChange("diploma", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                      </tr>
+                    )}
+
+                    {/* Degree - Show for Degree and PG */}
+                    {["Degree", "PG"].includes(formData.highestQualification) && (
+                      <tr className="hover:bg-slate-50/30 transition-colors">
+                        <td className="px-6 py-4 font-bold text-primary">Graduation (Degree)</td>
+                        <td className="px-6 py-4 flex flex-col gap-2">
+                          <select value={formData.degree.course} onChange={(e) => handleAcademicChange("degree", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option value="">Select Course</option>
+                            <option>BE / B.Tech</option>
+                            <option>B.Sc</option>
+                            <option>B.Com</option>
+                            <option>BCA</option>
+                            <option>BBA</option>
+                          </select>
+                          <select value={formData.degree.stream} onChange={(e) => handleAcademicChange("degree", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]">
+                            <option value="">Select Stream</option>
+                            <option>Computer Science & Engineering</option>
+                            <option>Information Science</option>
+                            <option>Electronics & Communication</option>
+                            <option>Mechanical Engineering</option>
+                            <option>Civil Engineering</option>
+                            <option>Electrical & Electronics</option>
+                            <option>Artificial Intelligence</option>
+                            <option>Data Science</option>
+                            <option>Physics / Math / Chemistry</option>
+                            <option>Commerce / Accounting</option>
+                            <option>Business Management</option>
+                            <option>Other</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4">
+                          <select name="degree-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("degree", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option>Regular</option>
+                            <option>Correspondence</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4"><input type="number" value={formData.degree.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("degree", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                        <td className="px-6 py-4"><input type="text" value={formData.degree.marks} placeholder="%" onChange={(e) => handleAcademicChange("degree", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                      </tr>
+                    )}
+
+                    {/* PG - Only for PG */}
+                    {formData.highestQualification === "PG" && (
+                      <tr className="hover:bg-slate-50/30 transition-colors">
+                        <td className="px-6 py-4 font-bold text-primary">Post Graduation</td>
+                        <td className="px-6 py-4 flex flex-col gap-2">
+                           <select value={formData.pg.course} onChange={(e) => handleAcademicChange("pg", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option value="">Select Course</option>
+                            <option>ME / M.Tech</option>
+                            <option>M.Sc</option>
+                            <option>MCA</option>
+                            <option>MBA</option>
+                          </select>
+                          <select value={formData.pg.stream} onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]">
+                            <option value="">Select Stream</option>
+                            <option>Data Science</option>
+                            <option>Artificial Intelligence / ML</option>
+                            <option>Computer Science & Engineering</option>
+                            <option>VLSI / Embedded Systems</option>
+                            <option>Thermal Engineering</option>
+                            <option>Structural Engineering</option>
+                            <option>Power Electronics</option>
+                            <option>Business Management (MBA)</option>
+                            <option>Finance</option>
+                            <option>Marketing</option>
+                            <option>Human Resources</option>
+                            <option>Other</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4">
+                          <select name="pg-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("pg", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                            <option>Regular</option>
+                            <option>Correspondence</option>
+                          </select>
+                        </td>
+                        <td className="px-6 py-4"><input type="number" value={formData.pg.year} placeholder="YYYY" onChange={(e) => handleAcademicChange("pg", "year", e.target.value)} className="w-20 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                        <td className="px-6 py-4"><input type="text" value={formData.pg.marks} placeholder="%" onChange={(e) => handleAcademicChange("pg", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-200 focus:outline-none text-xs" /></td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </section>
 
           {/* Section 3: Skills & Aspirations */}
