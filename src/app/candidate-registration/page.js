@@ -2,6 +2,32 @@
 
 import { useState } from "react";
 
+const degreeStreamsMap = {
+  "B.A": ["EHB", "EHC", "EJP", "HBC", "HEP", "HES", "HPS", "HRD", "KPS", "PEPS"],
+  "B.B.M": ["Finance", "Human Resource", "Marketing"],
+  "B.E/B.Tech": [
+    "Aeronautical Engineering", "Automobile Engineering", "Biomedical Engineering", "Bio-technology", 
+    "Ceramics and Cement Technology", "Chemical Engineering", "Civil Engineering", "Computer Engineering", 
+    "Computer Science & Engineering", "Electrical & Electronics Engineering", "Electronics & Communication Engineering", 
+    "Environmental Engineering", "Food Technology", "Industrial and Production Engineering", "Industrial Engineering and Management", 
+    "Information Science & Engineering", "Information Technology", "Instrumentation Technology", "Manufacturing Science and Engineering", 
+    "Marine Engineering", "Mechanical Engineering", "Mechatronics Engineering", "Medical Electronics", "Mining Engineering", 
+    "Polymer Science and Technology", "Silk Technology", "Telecom Engineering", "Textile Technology"
+  ],
+  "B.Sc": [
+    "Audiology", "BCB", "BCZ", "Biomedical", "BtCZ", "CBZ", "Chemical Engineering", "FND", "HS", "MBB", "MCZ", "Nursing", "PCM", "PMCs", "PME", "PMS", "Radiography"
+  ]
+};
+
+const pgStreamsMap = {
+  "M.A": ["Economics", "English", "Hindi", "History", "HRD", "Kannada", "Malayalam", "Mass Communication & Journalism", "Polytical Science", "Sankrith", "Travels & Tourism", "Urdu"],
+  "M.E./M.Tech": ["Computer Integrated Manufacturing", "Computer Science", "Design Engineering", "Energy Engineering", "Manufacturing Engineering", "Mechetronic", "Nuclear Engineering", "Productive Line Manufacturing", "Robotics", "Structural Engineering", "Thermal Power Engineering", "VLSI & Embedded Design"],
+  "M.Pharm": ["Pharmaceutical Analysis", "Pharmaceutical Chemistry", "Pharmaceutics"],
+  "M.S.W": ["CD", "HRM", "MP"],
+  "M.Sc": ["Analytical Chemistry", "Applied Botany", "Applied Chemistry", "Audiology", "Biotech", "Botany", "Chemical Engineering", "Computer Science", "Electronics Media", "Electronics", "FST", "General Chemistry", "Mathematics", "Microbiology", "Organic Chemistry", "Physics", "Psychology", "Statistics", "Zoology"],
+  "MBA": ["Finance", "Human Resources", "Marketing", "Information Technology", "Operations"]
+};
+
 export default function CandidateRegistration() {
   const [isReviewMode, setIsReviewMode] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,6 +56,7 @@ export default function CandidateRegistration() {
     languagesKnown: "",
     otherLanguagesKnown: "",
     industryAspiration: "",
+    otherIndustryAspiration: "",
 
     // Section 4: Questions
     higherStudies: "No",
@@ -204,7 +231,7 @@ export default function CandidateRegistration() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <ReviewItem label="Technical Skills" value={[formData.technicalSkills, formData.otherTechnicalSkills].filter(Boolean).join(", ")} />
                 <ReviewItem label="Languages Known" value={[formData.languagesKnown, formData.otherLanguagesKnown].filter(Boolean).join(", ")} />
-                <ReviewItem label="Industry Aspiration" value={formData.industryAspiration} />
+                <ReviewItem label="Industry Aspiration" value={[formData.industryAspiration, formData.otherIndustryAspiration].filter(Boolean).join(", ")} />
               </div>
             </section>
 
@@ -445,29 +472,46 @@ export default function CandidateRegistration() {
                       <tr className="hover:bg-slate-50/30 transition-colors">
                         <td className="px-6 py-4 font-bold text-primary">Graduation (Degree)</td>
                         <td className="px-6 py-4 flex flex-col gap-2">
-                          <select value={formData.degree.course} onChange={(e) => handleAcademicChange("degree", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                          <select value={formData.degree.course} onChange={(e) => {
+                            handleAcademicChange("degree", "course", e.target.value);
+                            handleAcademicChange("degree", "stream", "");
+                          }} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
                             <option value="">Select Course</option>
-                            <option>BE / B.Tech</option>
-                            <option>B.Sc</option>
+                            <option>ANM</option>
+                            <option>B.A</option>
+                            <option>B.B.M</option>
                             <option>B.Com</option>
-                            <option>BCA</option>
+                            <option>B.E/B.Tech</option>
+                            <option>B.Ed</option>
+                            <option>B.H.M.S</option>
+                            <option>B.H.R.D</option>
+                            <option>B.Pharm</option>
+                            <option>B.Sc</option>
+                            <option>BAMS</option>
                             <option>BBA</option>
+                            <option>BCA</option>
+                            <option>BDS</option>
+                            <option>BHM</option>
+                            <option>BHS</option>
+                            <option>BNYS</option>
+                            <option>BPT</option>
+                            <option>BSW</option>
+                            <option>BVA</option>
+                            <option>EEG</option>
+                            <option>GNM</option>
+                            <option>LLB</option>
+                            <option>MBBS</option>
+                            <option>Microbiology</option>
+                           
                           </select>
-                          <select value={formData.degree.stream} onChange={(e) => handleAcademicChange("degree", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]">
-                            <option value="">Select Stream</option>
-                            <option>Computer Science & Engineering</option>
-                            <option>Information Science</option>
-                            <option>Electronics & Communication</option>
-                            <option>Mechanical Engineering</option>
-                            <option>Civil Engineering</option>
-                            <option>Electrical & Electronics</option>
-                            <option>Artificial Intelligence</option>
-                            <option>Data Science</option>
-                            <option>Physics / Math / Chemistry</option>
-                            <option>Commerce / Accounting</option>
-                            <option>Business Management</option>
-                            <option>Other</option>
-                          </select>
+                          {degreeStreamsMap[formData.degree.course] && (
+                            <select value={formData.degree.stream} onChange={(e) => handleAcademicChange("degree", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px] mt-2">
+                              <option value="">Select Stream</option>
+                              {degreeStreamsMap[formData.degree.course].map(stream => (
+                                <option key={stream} value={stream}>{stream}</option>
+                              ))}
+                            </select>
+                          )}
                         </td>
                         <td className="px-6 py-4">
                           <select name="degree-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("degree", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
@@ -485,28 +529,39 @@ export default function CandidateRegistration() {
                       <tr className="hover:bg-slate-50/30 transition-colors">
                         <td className="px-6 py-4 font-bold text-primary">Post Graduation</td>
                         <td className="px-6 py-4 flex flex-col gap-2">
-                           <select value={formData.pg.course} onChange={(e) => handleAcademicChange("pg", "course", e.target.value)} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
+                           <select value={formData.pg.course} onChange={(e) => {
+                             handleAcademicChange("pg", "course", e.target.value);
+                             handleAcademicChange("pg", "stream", "");
+                           }} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-200">
                             <option value="">Select Course</option>
-                            <option>ME / M.Tech</option>
+                            <option>DNB</option>
+                            <option>M Ch</option>
+                            <option>M.A</option>
+                            <option>M.Com</option>
+                            <option>M.DS</option>
+                            <option>M.E./M.Tech</option>
+                            <option>M.Ed</option>
+                            <option>M.H.R.D</option>
+                            <option>M.Pharm</option>
+                            <option>M.S</option>
+                            <option>M.S.W</option>
                             <option>M.Sc</option>
-                            <option>MCA</option>
                             <option>MBA</option>
+                            <option>MCA</option>
+                            <option>MD</option>
+                            <option>MHA</option>
+                            <option>MHM</option>
+                            <option>MPT</option>
+                            <option>PGDDC</option>
                           </select>
-                          <select value={formData.pg.stream} onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px]">
-                            <option value="">Select Stream</option>
-                            <option>Data Science</option>
-                            <option>Artificial Intelligence / ML</option>
-                            <option>Computer Science & Engineering</option>
-                            <option>VLSI / Embedded Systems</option>
-                            <option>Thermal Engineering</option>
-                            <option>Structural Engineering</option>
-                            <option>Power Electronics</option>
-                            <option>Business Management (MBA)</option>
-                            <option>Finance</option>
-                            <option>Marketing</option>
-                            <option>Human Resources</option>
-                            <option>Other</option>
-                          </select>
+                          {pgStreamsMap[formData.pg.course] && (
+                            <select value={formData.pg.stream} onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-200 focus:outline-none text-[10px] mt-2">
+                              <option value="">Select Stream</option>
+                              {pgStreamsMap[formData.pg.course].map(stream => (
+                                <option key={stream} value={stream}>{stream}</option>
+                              ))}
+                            </select>
+                          )}
                         </td>
                         <td className="px-6 py-4">
                           <select name="pg-mode" defaultValue="Regular" onChange={(e) => handleAcademicChange("pg", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-200">
@@ -582,17 +637,33 @@ export default function CandidateRegistration() {
                   className="w-full mt-3 px-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all placeholder:text-slate-300"
                 />
               </div>
-              <div className={inputGroup}>
+              <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
                 <label className={labelStyle}>Industry Aspiration:</label>
-                <select name="industryAspiration" value={formData.industryAspiration} onChange={handleInputChange} className={selectStyle}>
-                  <option value="">Select Domain</option>
-                  <option>Software Development</option>
-                  <option>Data Analytics</option>
-                  <option>Digital Marketing</option>
-                  <option>Finance & Banking</option>
-                  <option>Core Engineering</option>
-                  <option>Research & Development</option>
-                </select>
+                <div className="flex flex-wrap gap-x-4 gap-y-3 mt-1 bg-slate-50/50 p-4 rounded-xl border border-slate-200">
+                  {["Automobile", "Banking and Financial Services", "Construction", "Defence", "Education/NGO", "Healthcare", "Hospitality", "HR Consultancy", "Infrastructure", "IT&ITES", "Manufacturing", "Media", "Pharmaceuticals", "Retail and Sales", "Telecom"].map(industry => (
+                    <label key={industry} className="flex items-center gap-2 text-sm text-slate-700 cursor-pointer bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm hover:border-accent/30 transition-all">
+                      <input 
+                        type="checkbox" 
+                        name="industryAspiration" 
+                        value={industry} 
+                        checked={formData.industryAspiration ? formData.industryAspiration.split(", ").filter(Boolean).includes(industry) : false} 
+                        onChange={handleCheckboxChange}
+                        className="w-4 h-4 text-accent border-slate-300 rounded focus:ring-accent/30 cursor-pointer"
+                      />
+                      {industry}
+                    </label>
+                  ))}
+                </div>
+                <div className="flex items-center gap-3 mt-3">
+                  <span className="text-sm font-semibold text-slate-700">Others:</span>
+                  <input 
+                    type="text" 
+                    name="otherIndustryAspiration" 
+                    value={formData.otherIndustryAspiration || ""} 
+                    onChange={handleInputChange} 
+                    className="flex-1 px-4 py-2 text-sm bg-white border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all placeholder:text-slate-300"
+                  />
+                </div>
               </div>
             </div>
           </section>

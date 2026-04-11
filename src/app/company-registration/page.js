@@ -8,8 +8,8 @@ const courseMapping = {
   "PUC": ["Science", "Commerce", "Arts"],
   "ITI": ["Fitter", "Electrician", "Mechanic", "Welder", "Turner", "Machinist", "Other"],
   "Diploma": ["3D Animation", "Aeronautical", "Agriculture", "Animation", "Architecture", "Automobile", "Civil", "Computer Science", "Electrical", "Electronics", "Mechanical", "Other"],
-  "Degree": ["B.E/B.Tech", "B.Sc", "B.Com", "B.A", "B.B.A", "B.C.A", "B.Pharm", "Other"],
-  "PG": ["M.E/M.Tech", "M.Sc", "M.Com", "M.A", "M.B.A", "M.C.A", "M.Pharm", "Other"],
+  "Degree": ["ANM", "B.A", "B.B.M", "B.Com", "B.E/B.Tech", "B.Ed", "B.H.M.S", "B.H.R.D", "B.Pharm", "B.Sc", "BAMS", "BBA", "BCA", "BDS", "BHM", "BHS", "BNYS", "BPT", "BSW", "BVA", "EEG", "GNM", "LLB", "MBBS", "Microbiology"],
+  "PG": ["DNB", "M Ch", "M.A", "M.Com", "M.DS", "M.E./M.Tech", "M.Ed", "M.H.R.D", "M.Pharm", "M.S", "M.S.W", "M.Sc", "MBA", "MCA", "MD", "MHA", "MHM", "MPT", "PGDDC"],
   "Doctorate": ["Ph.D", "M.Phil", "Other"]
 };
 export default function CompanyRegistration() {
@@ -270,10 +270,10 @@ export default function CompanyRegistration() {
                 <tbody className="divide-y divide-slate-50">
                   {executives.map((exec, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
-                      <td className="px-4 py-3"><input name="name" value={exec.name} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b border-transparent focus:border-accent" required /></td>
-                      <td className="px-4 py-3"><input name="designation" value={exec.designation} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b border-transparent focus:border-accent" required /></td>
-                      <td className="px-4 py-3"><input name="mobile" value={exec.mobile} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b border-transparent focus:border-accent" required /></td>
-                      <td className="px-4 py-3"><input name="email" value={exec.email} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b border-transparent focus:border-accent" required /></td>
+                      <td className="px-4 py-3"><input name="name" value={exec.name} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b-2 border-gray-400 focus:border-blue-500" required /></td>
+                      <td className="px-4 py-3"><input name="designation" value={exec.designation} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b-2 border-gray-400 focus:border-blue-500" required /></td>
+                      <td className="px-4 py-3"><input name="mobile" value={exec.mobile} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b-2 border-gray-400 focus:border-blue-500" required /></td>
+                      <td className="px-4 py-3"><input name="email" value={exec.email} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b-2 border-gray-400 focus:border-blue-500" required /></td>
                       <td className="px-4 py-3">
                         <div className="flex gap-4">
                           <label className="flex items-center gap-1.5 text-xs"><input type="radio" name={`gender-${idx}`} value="Male" checked={exec.gender === "Male"} onChange={(e) => handleExecChange(idx, { target: { name: 'gender', value: 'Male' } })} /> M</label>
