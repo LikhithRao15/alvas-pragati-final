@@ -2,9 +2,9 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#020212] pt-20 pb-4 relative border-t border-slate-100">
+    <footer className="bg-[#020212] pt-12 sm:pt-20 pb-4 relative border-t border-slate-100">
       <div className="max-w-7xl mx-auto px-6 lg:px-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-16">
           
           {/* Column 1: Brand */}
           <div className="col-span-1 lg:col-span-1 pr-0 lg:pr-6">
@@ -70,18 +70,18 @@ export default function Footer() {
             <ul className="space-y-5">
               <li className="flex items-start gap-4">
                 <i className="fas fa-map-marker-alt text-accent mt-0.5 text-[15px]"></i>
-                <span className="text-[13px] text-white font-medium leading-relaxed">Alva's College, Vidyagiri, Moodbidri, DK, <br/> Karnataka – 574 227</span>
+                <span className="text-[13px] text-white font-medium leading-relaxed">Alva's College, Vidyagiri, Moodbidri, DK, <br className="hidden sm:block"/> Karnataka – 574 227</span>
               </li>
-              <li className="flex items-center gap-4 hover:cursor-pointer group">
-                <i className="fas fa-phone-alt text-accent text-[14px]"></i>
-                <span className="text-[13px] text-white font-medium group-hover:text-primary transition-colors">+91 820 222 2222 / +91 820 222 3333</span>
+              <li className="flex items-start gap-4 hover:cursor-pointer group">
+                <i className="fas fa-phone-alt text-accent text-[14px] mt-0.5"></i>
+                <span className="text-[13px] text-white font-medium group-hover:text-primary transition-colors">+91 820 222 2222 /<br className="sm:hidden" /> +91 820 222 3333</span>
               </li>
-              <li className="flex items-center gap-4 hover:cursor-pointer group">
-                <i className="fas fa-envelope text-accent text-[14px]"></i>
+              <li className="flex items-start gap-4 hover:cursor-pointer group">
+                <i className="fas fa-envelope text-accent text-[14px] mt-0.5"></i>
                 <span className="text-[13px] text-white font-medium group-hover:text-primary transition-colors">pragati@alvas.org</span>
               </li>
-              <li className="flex items-center gap-4 hover:cursor-pointer group">
-                <i className="fas fa-globe text-accent text-[14px]"></i>
+              <li className="flex items-start gap-4 hover:cursor-pointer group">
+                <i className="fas fa-globe text-accent text-[14px] mt-0.5"></i>
                 <span className="text-[13px] text-white font-medium group-hover:text-primary transition-colors">www.alvas.org</span>
               </li>
             </ul>
@@ -90,10 +90,11 @@ export default function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-slate-200 mt-16 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-xs text-white font-medium">© 2025 Alva's Education Foundation. All rights reserved.</p>
-          <div className="text-[#c5a059] text-[11px] font-semibold tracking-wide flex items-center gap-2">
-            <span className="text-[14px]">✦</span> Alvas Pragati — Connecting Talent with Opportunity
+        <div className="border-t border-slate-800/80 mt-12 sm:mt-16 py-6 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4 text-center md:text-left">
+          <p className="text-xs text-white/80 font-medium">© 2025 Alva's Education Foundation. All rights reserved.</p>
+          <div className="text-[#c5a059] text-[11px] font-semibold tracking-wide flex flex-col sm:flex-row items-center gap-2 sm:gap-3">
+            <span className="text-[14px] hidden sm:inline">✦</span> 
+            <span>Alvas Pragati — Connecting Talent with Opportunity</span>
           </div>
         </div>
       </div>

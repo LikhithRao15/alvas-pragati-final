@@ -13,6 +13,7 @@ const courseMapping = {
   "Doctorate": ["Ph.D", "M.Phil", "Other"]
 };
 export default function CompanyRegistration() {
+  const [submitted, setSubmitted] = useState(false);
   const [formData, setFormData] = useState({
     // Section 1: Company Profile
     organizationName: "",
@@ -62,14 +63,16 @@ export default function CompanyRegistration() {
     { name: "", designation: "", mobile: "", email: "", gender: "Male" }
   ]);
 
+  const initialOpening = {
+    vacancies: "", designation: "", qualification: ["Degree"], course: [], stream: "",
+    fromCTC: "", toCTC: "", cutOff: "", jobLocation: "", jobDescription: "",
+    expFrom: "3", expTo: "7"
+  };
+
   // Section 5: Current Openings
-  const [openings, setOpenings] = useState([
-    {
-      vacancies: "", designation: "", qualification: ["Degree"], course: [], stream: "",
-      fromCTC: "", toCTC: "", cutOff: "", jobLocation: "", jobDescription: "",
-      expFrom: "3", expTo: "7"
-    }
-  ]);
+  const [openings, setOpenings] = useState(
+    Array.from({ length: 5 }, () => ({ ...initialOpening }))
+  );
   const [openDropdown, setOpenDropdown] = useState(null);
 
   const handleInputChange = (e) => {
@@ -87,7 +90,7 @@ export default function CompanyRegistration() {
   const handleExecChange = (index, e) => {
     const { name, value } = e.target;
     const newExecs = [...executives];
-    newExecs[index][name] = value;
+    newExecs[index] = { ...newExecs[index], [name]: value };
     setExecutives(newExecs);
   };
 
@@ -98,6 +101,7 @@ export default function CompanyRegistration() {
   const handleOpeningChange = (index, e) => {
     const { name, value, type, options } = e.target;
     const newOpenings = [...openings];
+    newOpenings[index] = { ...newOpenings[index] };
     
     if (type === "select-multiple") {
        const selectedValues = Array.from(options).filter(op => op.selected).map(op => op.value);
@@ -113,11 +117,7 @@ export default function CompanyRegistration() {
   };
 
   const addOpening = () => {
-    setOpenings([...openings, {
-      vacancies: "", designation: "", qualification: ["Degree"], course: [], stream: "",
-      fromCTC: "", toCTC: "", cutOff: "", jobLocation: "", jobDescription: "",
-      expFrom: "3", expTo: "7"
-    }]);
+    setOpenings([...openings, { ...initialOpening }]);
   };
 
   const handleClear = () => {
@@ -128,6 +128,8 @@ export default function CompanyRegistration() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSubmitted(true);
+    if (!e.target.checkValidity()) return;
     alert("Company registration data submitted successfully!");
     console.log({ ...formData, executives, openings });
   };
@@ -135,11 +137,16 @@ export default function CompanyRegistration() {
   // UI Helpers
   const sectionHeader = "border-b-2 border-accent/20 pb-2 mb-8 mt-12 flex items-center justify-between";
   const sectionTitle = "text-xl font-bold text-primary font-heading uppercase tracking-wider";
-  const inputGroup = "flex flex-col gap-1.5";
-  const labelStyle = "text-[11px] font-bold text-slate-500 uppercase tracking-widest";
-  const inputStyle = "px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm";
-  const selectStyle = "px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm appearance-none cursor-pointer";
-  const radioGroup = "flex items-center gap-6 mt-1";
+  const inputGroup = "flex flex-col gap-1.5 relative";
+  const labelStyle = "text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1";
+  
+  const baseInputStyle = "px-4 py-2.5 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm w-full peer";
+  const inputStyle = submitted ? `${baseInputStyle} border-slate-200 invalid:border-red-500 invalid:bg-red-50` : `${baseInputStyle} border-slate-200`;
+  const baseSelectStyle = "px-4 py-2.5 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm appearance-none cursor-pointer w-full peer";
+  const selectStyle = submitted ? `${baseSelectStyle} border-slate-200 invalid:border-red-500 invalid:bg-red-50` : `${baseSelectStyle} border-slate-200`;
+  
+  const ErrorMsg = () => submitted ? <span className="hidden peer-invalid:block text-red-500 text-[10px] mt-0.5 font-semibold">This field is required</span> : null;
+  const radioGroup = "flex flex-wrap items-center gap-4 sm:gap-6 mt-1";
   const radioLabel = "flex items-center gap-2 text-sm text-slate-700 cursor-pointer";
 
   const getAvailableCourses = (qualifications) => {
@@ -164,7 +171,7 @@ export default function CompanyRegistration() {
           <p className="text-slate-500 font-medium">Please fill in the comprehensive details below to register for the placement drive.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-8 md:p-14 border border-white">
+        <form onSubmit={handleSubmit} noValidate className="bg-white rounded-3xl sm:rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-5 sm:p-8 md:p-14 border border-white">
 
           {/* Section 1: Company Profile */}
           <section>
@@ -173,15 +180,16 @@ export default function CompanyRegistration() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className={inputGroup}>
-                <label className={labelStyle}>Organization Name:</label>
+                <label className={labelStyle}>Organization Name:<span className="text-red-500 text-sm">*</span></label>
                 <input name="organizationName" value={formData.organizationName} onChange={handleInputChange} className={inputStyle} required />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
                 <label className={labelStyle}>Company URL (Optional):</label>
                 <input name="companyUrl" type="url" value={formData.companyUrl} onChange={handleInputChange} className={inputStyle} placeholder="https://www.example.com" />
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Sector:</label>
+                <label className={labelStyle}>Sector:<span className="text-red-500 text-sm">*</span></label>
                 <select name="sector" value={formData.sector} onChange={handleInputChange} className={selectStyle}>
                   <option>Banking & Finance</option>
                   <option>Construction</option>
@@ -202,16 +210,19 @@ export default function CompanyRegistration() {
                 </select>
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Contact Person:</label>
+                <label className={labelStyle}>Contact Person:<span className="text-red-500 text-sm">*</span></label>
                 <input name="contactPerson" value={formData.contactPerson} onChange={handleInputChange} className={inputStyle} required />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Email ID:</label>
+                <label className={labelStyle}>Email ID:<span className="text-red-500 text-sm">*</span></label>
                 <input name="emailId" type="email" value={formData.emailId} onChange={handleInputChange} className={inputStyle} required />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Designation:</label>
+                <label className={labelStyle}>Designation:<span className="text-red-500 text-sm">*</span></label>
                 <input name="designation" value={formData.designation} onChange={handleInputChange} className={inputStyle} required />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
                 <label className={labelStyle}>Gender:</label>
@@ -220,23 +231,26 @@ export default function CompanyRegistration() {
                   <label className={radioLabel}><input type="radio" name="gender" value="Female" checked={formData.gender === "Female"} onChange={handleInputChange} /> Female</label>
                 </div>
               </div>
-              <div className="grid grid-cols-4 gap-4">
-                <div className={`${inputGroup} col-span-1`}>
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+                <div className={`${inputGroup} sm:col-span-1`}>
                   <label className={labelStyle}>Code:</label>
                   <input name="countryCode" value={formData.countryCode} onChange={handleInputChange} className={inputStyle} />
                 </div>
-                <div className={`${inputGroup} col-span-3`}>
-                  <label className={labelStyle}>Mobile Number:</label>
+                <div className={`${inputGroup} sm:col-span-3`}>
+                  <label className={labelStyle}>Mobile Number:<span className="text-red-500 text-sm">*</span></label>
                   <input name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} className={inputStyle} required />
+                  <ErrorMsg />
                 </div>
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Company Logo:</label>
+                <label className={labelStyle}>Company Logo:<span className="text-red-500 text-sm">*</span></label>
                 <input name="companyLogo" type="file" accept="image/*" onChange={handleFileChange} className={`${inputStyle} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 text-slate-500`} required />
+                <ErrorMsg />
               </div>
               <div className={`${inputGroup} md:col-span-2`}>
-                <label className={labelStyle}>Address:</label>
+                <label className={labelStyle}>Address:<span className="text-red-500 text-sm">*</span></label>
                 <textarea name="address" value={formData.address} onChange={handleInputChange} rows="2" className={inputStyle} required />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
                 <label className={labelStyle}>Interview Type:</label>
@@ -257,7 +271,7 @@ export default function CompanyRegistration() {
               </button>
             </div>
             <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm">
-              <table className="w-full text-left text-sm border-collapse">
+              <table className="w-full text-left text-sm border-collapse min-w-[800px]">
                 <thead className="bg-slate-50/80 border-b border-slate-100 uppercase tracking-wider text-[10px] font-bold text-slate-400">
                   <tr>
                     <th className="px-6 py-4">*Name of the Executive visiting</th>
@@ -270,10 +284,10 @@ export default function CompanyRegistration() {
                 <tbody className="divide-y divide-slate-50">
                   {executives.map((exec, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
-                      <td className="px-4 py-3"><input name="name" value={exec.name} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b-2 border-gray-400 focus:border-blue-500" required /></td>
-                      <td className="px-4 py-3"><input name="designation" value={exec.designation} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b-2 border-gray-400 focus:border-blue-500" required /></td>
-                      <td className="px-4 py-3"><input name="mobile" value={exec.mobile} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b-2 border-gray-400 focus:border-blue-500" required /></td>
-                      <td className="px-4 py-3"><input name="email" value={exec.email} onChange={(e) => handleExecChange(idx, e)} className="w-full bg-transparent p-2 outline-none border-b-2 border-gray-400 focus:border-blue-500" required /></td>
+                      <td className="px-4 py-3"><input name="name" value={exec.name} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
+                      <td className="px-4 py-3"><input name="designation" value={exec.designation} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
+                      <td className="px-4 py-3"><input name="mobile" value={exec.mobile} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
+                      <td className="px-4 py-3"><input name="email" value={exec.email} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
                       <td className="px-4 py-3">
                         <div className="flex gap-4">
                           <label className="flex items-center gap-1.5 text-xs"><input type="radio" name={`gender-${idx}`} value="Male" checked={exec.gender === "Male"} onChange={(e) => handleExecChange(idx, { target: { name: 'gender', value: 'Male' } })} /> M</label>
@@ -291,7 +305,7 @@ export default function CompanyRegistration() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-4">
             {/* Accommodation */}
             <section className="bg-slate-50/50 p-8 rounded-3xl border border-slate-100">
-              <div className="flex items-center justify-between mb-8 border-b border-slate-200 pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 mb-8 border-b border-slate-200 pb-3">
                 <h3 className="font-bold text-primary tracking-tight">Accommodation Details :</h3>
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="accRequired" value="Yes" checked={formData.accRequired === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -301,24 +315,27 @@ export default function CompanyRegistration() {
 
               {formData.accRequired === "Yes" && (
                 <div className="space-y-6 animate-fadeIn">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className={inputGroup}>
-                      <label className={labelStyle}>*No of Male Executives</label>
+                      <label className={labelStyle}>No of Male Executives:<span className="text-red-500 text-sm">*</span></label>
                       <input name="maleExecutives" value={formData.maleExecutives} onChange={handleInputChange} type="number" className={inputStyle} required />
+                      <ErrorMsg />
                     </div>
                     <div className={inputGroup}>
                       <label className={labelStyle}>No of Female Executives</label>
                       <input name="femaleExecutives" value={formData.femaleExecutives} onChange={handleInputChange} type="number" className={inputStyle} />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className={inputGroup}>
-                      <label className={labelStyle}>*Checkin Date</label>
+                      <label className={labelStyle}>Checkin Date:<span className="text-red-500 text-sm">*</span></label>
                       <input name="checkInDate" value={formData.checkInDate} onChange={handleInputChange} type="date" className={inputStyle} required />
+                      <ErrorMsg />
                     </div>
                     <div className={inputGroup}>
-                      <label className={labelStyle}>*Checkout Date</label>
+                      <label className={labelStyle}>Checkout Date:<span className="text-red-500 text-sm">*</span></label>
                       <input name="checkOutDate" value={formData.checkOutDate} onChange={handleInputChange} type="date" className={inputStyle} required />
+                      <ErrorMsg />
                     </div>
                   </div>
                 </div>
@@ -327,7 +344,7 @@ export default function CompanyRegistration() {
 
             {/* Transportation */}
             <section className="bg-slate-50/50 p-8 rounded-3xl border border-slate-100">
-              <div className="flex items-center justify-between mb-8 border-b border-slate-200 pb-3">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 mb-8 border-b border-slate-200 pb-3">
                 <h3 className="font-bold text-primary tracking-tight">Transportation Required:</h3>
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="transRequired" value="Yes" checked={formData.transRequired === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -337,28 +354,33 @@ export default function CompanyRegistration() {
 
               {formData.transRequired === "Yes" && (
                 <div className="space-y-6 animate-fadeIn">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className={inputGroup}>
-                      <label className={labelStyle}>*From Location</label>
+                      <label className={labelStyle}>From Location:<span className="text-red-500 text-sm">*</span></label>
                       <input name="fromLocation" value={formData.fromLocation} onChange={handleInputChange} className={inputStyle} required />
+                      <ErrorMsg />
                     </div>
                     <div className={inputGroup}>
-                      <label className={labelStyle}>*To Location</label>
+                      <label className={labelStyle}>To Location:<span className="text-red-500 text-sm">*</span></label>
                       <input name="toLocation" value={formData.toLocation} onChange={handleInputChange} className={inputStyle} required />
+                      <ErrorMsg />
                     </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className={inputGroup}>
-                      <label className={labelStyle}>*PickUp Date</label>
+                      <label className={labelStyle}>PickUp Date:<span className="text-red-500 text-sm">*</span></label>
                       <input name="pickUpDate" value={formData.pickUpDate} onChange={handleInputChange} type="date" className={inputStyle} required />
+                      <ErrorMsg />
                     </div>
                     <div className={inputGroup}>
-                      <label className={labelStyle}>*PickUp Time</label>
+                      <label className={labelStyle}>PickUp Time:<span className="text-red-500 text-sm">*</span></label>
                       <input name="pickUpTime" value={formData.pickUpTime} onChange={handleInputChange} type="time" className={inputStyle} required />
+                      <ErrorMsg />
                     </div>
                     <div className={inputGroup}>
-                      <label className={labelStyle}>*No of Executives</label>
+                      <label className={labelStyle}>No of Executives:<span className="text-red-500 text-sm">*</span></label>
                       <input name="numExecs" value={formData.numExecs} onChange={handleInputChange} type="number" className={inputStyle} required />
+                      <ErrorMsg />
                     </div>
                   </div>
                 </div>
@@ -379,7 +401,7 @@ export default function CompanyRegistration() {
 
                 <div className="space-y-10">
                   <div className={inputGroup}>
-                    <div className="flex items-center gap-12">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-12">
                       <label className={labelStyle}>Online Exam:</label>
                       <div className="flex gap-4">
                         <label className={radioLabel}><input type="radio" name="onlineExam" value="Yes" checked={formData.onlineExam === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -389,8 +411,9 @@ export default function CompanyRegistration() {
                     {formData.onlineExam === "Yes" && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                         <div className={inputGroup}>
-                          <label className={labelStyle}>*No of Computers</label>
+                          <label className={labelStyle}>No of Computers:<span className="text-red-500 text-sm">*</span></label>
                           <input name="numComputers" value={formData.numComputers} onChange={handleInputChange} type="number" className={inputStyle} required />
+                          <ErrorMsg />
                         </div>
                         <div className={inputGroup}>
                           <label className={labelStyle}>No of Headphones</label>
@@ -405,7 +428,7 @@ export default function CompanyRegistration() {
                   </div>
 
                   <div className={inputGroup}>
-                    <div className="flex items-center gap-12">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-12">
                       <label className={labelStyle}>Written Exam:</label>
                       <div className="flex gap-4">
                         <label className={radioLabel}><input type="radio" name="writtenExam" value="Yes" checked={formData.writtenExam === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -415,21 +438,22 @@ export default function CompanyRegistration() {
                     {formData.writtenExam === "Yes" && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                         <div className={inputGroup}>
-                          <label className={labelStyle}>*Seating Capacity</label>
-                          <select name="seatingCapacity" value={formData.seatingCapacity} onChange={handleInputChange} className={selectStyle}>
-                            <option>Please Select</option>
+                          <label className={labelStyle}>Seating Capacity:<span className="text-red-500 text-sm">*</span></label>
+                          <select name="seatingCapacity" value={formData.seatingCapacity} onChange={handleInputChange} className={selectStyle} required>
+                            <option value="">Please Select</option>
                             <option>25</option>
                             <option>50</option>
                             <option>75</option>
                             <option>100</option>
                           </select>
+                          <ErrorMsg />
                         </div>
                       </div>
                     )}
                   </div>
 
                   <div className={inputGroup}>
-                    <div className="flex items-center gap-12">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-12">
                       <label className={labelStyle}>Group Discussion:</label>
                       <div className="flex gap-4">
                         <label className={radioLabel}><input type="radio" name="groupDiscussion" value="Yes" checked={formData.groupDiscussion === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -439,8 +463,9 @@ export default function CompanyRegistration() {
                     {formData.groupDiscussion === "Yes" && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                         <div className={inputGroup}>
-                          <label className={labelStyle}>Purpose</label>
+                          <label className={labelStyle}>Purpose:<span className="text-red-500 text-sm">*</span></label>
                           <input name="gdPurpose" value={formData.gdPurpose} onChange={handleInputChange} className={inputStyle} required />
+                          <ErrorMsg />
                         </div>
                         <div className={inputGroup}>
                           <label className={labelStyle}>Specific requirements</label>
@@ -463,19 +488,19 @@ export default function CompanyRegistration() {
               </button>
             </div>
             <p className="text-[10px] text-slate-400 font-bold mb-4">*Please mark NA for cut off percentage if not required.</p>
-            <div className="w-full overflow-visible rounded-3xl border border-slate-100 shadow-sm">
-              <table className="w-full text-left text-[11px] border-collapse">
+            <div className="w-full overflow-x-auto rounded-3xl border border-slate-100 shadow-sm pb-40">
+              <table className="w-full text-left text-[11px] border-collapse min-w-[1200px]">
                 <thead className="bg-primary/5 border-b border-primary/10 font-bold text-primary uppercase">
                   <tr>
-                    <th className="px-4 py-4 min-w-[80px]">No of Vacancies</th>
-                    <th className="px-4 py-4 min-w-[120px]">Designation/Position</th>
+                    <th className="px-4 py-4 min-w-[80px]">*No of Vacancies</th>
+                    <th className="px-4 py-4 min-w-[120px]">*Designation/Position</th>
                     <th className="px-4 py-4 min-w-[130px]">Qualification</th>
                     <th className="px-4 py-4 min-w-[130px]">Course</th>
-                    <th className="px-4 py-4 min-w-[90px]">From CTC(L/A)</th>
-                    <th className="px-4 py-4 min-w-[90px]">To CTC(L/A)</th>
-                    <th className="px-4 py-4 min-w-[80px]">Cut Off%</th>
-                    <th className="px-4 py-4 min-w-[100px]">Job Location</th>
-                    <th className="px-4 py-4 min-w-[150px]">Job Description</th>
+                    <th className="px-4 py-4 min-w-[90px]">*From CTC(L/A)</th>
+                    <th className="px-4 py-4 min-w-[90px]">*To CTC(L/A)</th>
+                    <th className="px-4 py-4 min-w-[80px]">*Cut Off%</th>
+                    <th className="px-4 py-4 min-w-[100px]">*Job Location</th>
+                    <th className="px-4 py-4 min-w-[150px]">*Job Description</th>
                     <th className="px-4 py-4 min-w-[80px]">Exp From</th>
                     <th className="px-4 py-4 min-w-[80px]">Exp To</th>
                   </tr>
@@ -483,8 +508,8 @@ export default function CompanyRegistration() {
                 <tbody className="divide-y divide-slate-100">
                   {openings.map((op, idx) => (
                     <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-2 py-3"><input name="vacancies" value={op.vacancies} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
-                      <td className="px-2 py-3"><input name="designation" value={op.designation} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
+                      <td className="px-2 py-3"><input name="vacancies" value={op.vacancies} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
+                      <td className="px-2 py-3"><input name="designation" value={op.designation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
                       <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
                         <div 
                           onClick={() => setOpenDropdown(openDropdown === `qual-${idx}` ? null : `qual-${idx}`)}
@@ -554,11 +579,11 @@ export default function CompanyRegistration() {
                         )}
                       </td>
 
-                      <td className="px-2 py-3"><input name="fromCTC" value={op.fromCTC} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
-                      <td className="px-2 py-3"><input name="toCTC" value={op.toCTC} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
-                      <td className="px-2 py-3"><input name="cutOff" value={op.cutOff} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
-                      <td className="px-2 py-3"><input name="jobLocation" value={op.jobLocation} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" required /></td>
-                      <td className="px-2 py-3"><textarea name="jobDescription" value={op.jobDescription} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent" rows="1" required /></td>
+                      <td className="px-2 py-3"><input name="fromCTC" value={op.fromCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
+                      <td className="px-2 py-3"><input name="toCTC" value={op.toCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
+                      <td className="px-2 py-3"><input name="cutOff" value={op.cutOff} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
+                      <td className="px-2 py-3"><input name="jobLocation" value={op.jobLocation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
+                      <td className="px-2 py-3"><textarea name="jobDescription" value={op.jobDescription} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} rows="1" required /></td>
                       <td className="px-2 py-3">
                         <select name="expFrom" value={op.expFrom} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
                           <option>Exp</option>

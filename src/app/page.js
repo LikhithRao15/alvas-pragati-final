@@ -100,64 +100,7 @@ export default function Home() {
 
       
 
-      <section id="about" className="py-20 md:py-32 relative overflow-hidden bg-white">
-        {/* Subtle decorative background blur */}
-        <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/3 w-[600px] h-[600px] bg-accent/15 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-6 lg:px-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
-            
-            {/* Text Content */}
-            <div className="flex flex-col items-start">
-              <div className="inline-flex items-center gap-3 bg-slate-50 border border-slate-100 shadow-sm px-5 py-2 rounded-full mb-8">
-                <div className="w-2 h-2 rounded-full bg-accent"></div>
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-primary">About Us</span>
-              </div>
-              
-              <h2 className="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-primary leading-[1.1] mb-6 drop-shadow-sm">
-                Empowering Careers,<br/> Building Futures
-              </h2>
-              
-              <p className="text-text-muted text-lg md:text-xl leading-relaxed mb-6 font-medium">
-                Alvas Pragati delivers the best career opportunities by matching talent with leading companies across multiple specialized domains.
-              </p>
-              
-              <p className="text-text-muted text-lg leading-relaxed mb-10">
-                Through strategic partnerships, comprehensive training, and personalized guidance, we craft success journeys for every single candidate.
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 w-full">
-                <div className="p-6 rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group">
-                  <div className="w-12 h-12 bg-primary/5 text-primary rounded-2xl flex items-center justify-center mb-5 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                    <i className="fas fa-briefcase text-xl"></i>
-                  </div>
-                  <h3 className="text-xl font-bold text-primary mb-2 font-heading">Placement Drives</h3>
-                  <p className="text-text-muted text-sm leading-relaxed">Massive campus drives and recruitment events across diverse domains.</p>
-                </div>
-                
-                <div className="p-6 rounded-3xl bg-white border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 group">
-                  <div className="w-12 h-12 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mb-5 group-hover:bg-accent group-hover:text-white transition-colors duration-300">
-                    <i className="fas fa-compass text-xl"></i>
-                  </div>
-                  <h3 className="text-xl font-bold text-primary mb-2 font-heading">Career Counseling</h3>
-                  <p className="text-text-muted text-sm leading-relaxed">Expert career planning support, skill gap analysis, and mentorship.</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Images Layout */}
-            <div className="relative w-full h-full min-h-[400px] lg:min-h-[600px] rounded-[2rem] overflow-hidden shadow-2xl transition-transform duration-500 hover:scale-[1.02]">
-              <Image 
-                src="/Dr.Mohan-Alva-1.jpg" 
-                alt="Dr. Mohan Alva" 
-                fill 
-                className="object-cover object-[center_top]" 
-              />
-            </div>
-            
-          </div>
-        </div>
-      </section>
+      
 
       {/* Testimonials Section */}
       <section className="py-24 bg-gradient-to-b from-[#f4f7fc] to-white relative overflow-hidden">

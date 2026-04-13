@@ -50,12 +50,12 @@ export default function Header() {
                 />
               </div>
               <div className="w-px h-10 lg:h-12 bg-black/10 hidden sm:block"></div>
-              <div className="relative h-11 w-auto lg:h-14 flex items-center">
+              <div className="relative h-12 w-auto lg:h-[4.5rem] flex items-center">
                 <Image
                   src="/alva's.png"
                   alt="Alva's Logo"
-                  width={150}
-                  height={60}
+                  width={220}
+                  height={80}
                   className="h-full w-auto object-contain drop-shadow-sm"
                   priority
                 />
@@ -98,9 +98,10 @@ export default function Header() {
               </div>
             </div>
 
-            <Link href="#companies" className="text-text-main hover:text-accent transition-colors duration-200">Participating<br/>Companies</Link>
+           
             <Link href="/candidate-registration" className="text-text-main hover:text-accent transition-colors duration-200">Candidate<br/>Registration</Link>
             <Link href="/company-registration" className="text-text-main hover:text-accent transition-colors duration-200">Company <br/>Registration</Link>
+            <Link href="#companies" className="text-text-main hover:text-accent transition-colors duration-200">Participating<br/>Companies</Link>
             <Link href="#" className="text-text-main hover:text-accent transition-colors duration-200">Result</Link>
             
             <Link 

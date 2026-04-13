@@ -29,6 +29,7 @@ const pgStreamsMap = {
 };
 
 export default function CandidateRegistration() {
+  const [submitted, setSubmitted] = useState(false);
   const [isReviewMode, setIsReviewMode] = useState(false);
   const [formData, setFormData] = useState({
     // Section 1: Personal Profile
@@ -101,6 +102,8 @@ export default function CandidateRegistration() {
 
   const handleReview = (e) => {
     e.preventDefault();
+    setSubmitted(true);
+    if (!e.target.checkValidity()) return;
     setIsReviewMode(true);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -120,11 +123,17 @@ export default function CandidateRegistration() {
   // UI Helpers
   const sectionHeader = "border-b-2 border-accent/20 pb-2 mb-8 mt-12 flex items-center justify-between";
   const sectionTitle = "text-xl font-bold text-primary font-heading uppercase tracking-wider";
-  const inputGroup = "flex flex-col gap-1.5";
-  const labelStyle = "text-[11px] font-bold text-slate-500 uppercase tracking-widest";
-  const inputStyle = "px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm";
-  const selectStyle = "px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm appearance-none cursor-pointer";
-  const radioGroup = "flex items-center gap-6 mt-1";
+  const inputGroup = "flex flex-col gap-1.5 relative";
+  const labelStyle = "text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1";
+  
+  const baseInputStyle = "px-4 py-2.5 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm w-full peer";
+  const inputStyle = submitted ? `${baseInputStyle} border-slate-200 invalid:border-red-500 invalid:bg-red-50` : `${baseInputStyle} border-slate-200`;
+  const baseSelectStyle = "px-4 py-2.5 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm appearance-none cursor-pointer w-full peer";
+  const selectStyle = submitted ? `${baseSelectStyle} border-slate-200 invalid:border-red-500 invalid:bg-red-50` : `${baseSelectStyle} border-slate-200`;
+  
+  const ErrorMsg = () => submitted ? <span className="hidden peer-invalid:block text-red-500 text-[10px] mt-0.5 font-semibold">This field is required</span> : null;
+
+  const radioGroup = "flex flex-wrap items-center gap-4 sm:gap-6 mt-1";
   const radioLabel = "flex items-center gap-2 text-sm text-slate-700 cursor-pointer";
 
   const ReviewItem = ({ label, value }) => (
@@ -143,7 +152,7 @@ export default function CandidateRegistration() {
             <p className="text-slate-500">Please confirm your information before final submission.</p>
           </div>
 
-          <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 md:p-14 border border-white space-y-12">
+          <div className="bg-white rounded-3xl sm:rounded-[2.5rem] shadow-2xl p-5 sm:p-8 md:p-14 border border-white space-y-12">
             {/* Personal Details Preview */}
             <section>
               <h2 className="text-lg font-bold text-accent uppercase tracking-widest mb-6 flex items-center gap-3">
@@ -240,7 +249,7 @@ export default function CandidateRegistration() {
               <h2 className="text-lg font-bold text-accent uppercase tracking-widest mb-6 flex items-center gap-3">
                 <span className="w-8 h-px bg-accent"></span> Additional Info
               </h2>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
                 <ReviewItem label="Higher Studies" value={formData.higherStudies} />
                 <ReviewItem label="Shift Ready" value={formData.shiftWork} />
                 <ReviewItem label="Valid Passport" value={formData.validPassport} />
@@ -282,7 +291,7 @@ export default function CandidateRegistration() {
           <p className="text-slate-500 font-medium">Empowering your future. Please provide your comprehensive details to join our placement drive.</p>
         </div>
 
-        <form onSubmit={handleReview} className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-8 md:p-14 border border-white">
+        <form onSubmit={handleReview} noValidate className="bg-white rounded-3xl sm:rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-5 sm:p-8 md:p-14 border border-white">
           
           {/* Section 1: Personal Profile */}
           <section>
@@ -291,8 +300,9 @@ export default function CandidateRegistration() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               <div className={inputGroup}>
-                <label className={labelStyle}>Full Name:</label>
+                <label className={labelStyle}>Full Name:<span className="text-red-500 text-sm">*</span></label>
                 <input name="fullName" value={formData.fullName} onChange={handleInputChange} className={inputStyle} required placeholder="Enter your full name" />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
                 <label className={labelStyle}>Gender:</label>
@@ -302,24 +312,28 @@ export default function CandidateRegistration() {
                 </div>
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Mobile Number:</label>
+                <label className={labelStyle}>Mobile Number:<span className="text-red-500 text-sm">*</span></label>
                 <input name="mobileNumber" type="tel" value={formData.mobileNumber} onChange={handleInputChange} className={inputStyle} required placeholder="10-digit mobile number" />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Date of Birth:</label>
+                <label className={labelStyle}>Date of Birth:<span className="text-red-500 text-sm">*</span></label>
                 <input name="dob" type="date" value={formData.dob} onChange={handleInputChange} className={inputStyle} required />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Email ID:</label>
+                <label className={labelStyle}>Email ID:<span className="text-red-500 text-sm">*</span></label>
                 <input name="email" type="email" value={formData.email} onChange={handleInputChange} className={inputStyle} required placeholder="example@email.com" />
+                <ErrorMsg />
               </div>
               <div className={inputGroup}>
                 <label className={labelStyle}>Family Income (Annual):</label>
                 <input name="familyIncome" type="number" value={formData.familyIncome} onChange={handleInputChange} className={inputStyle} placeholder="e.g. 500000" />
               </div>
               <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
-                <label className={labelStyle}>Address:</label>
+                <label className={labelStyle}>Address:<span className="text-red-500 text-sm">*</span></label>
                 <textarea name="address" value={formData.address} onChange={handleInputChange} rows="2" className={inputStyle} required placeholder="Enter your full permanent address" />
+                <ErrorMsg />
               </div>
               <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
                 <label className={labelStyle}>Upload Resume (Optional):</label>
@@ -335,7 +349,7 @@ export default function CandidateRegistration() {
             </div>
 
             <div className={`${inputGroup} mb-8 max-w-md`}>
-              <label className={labelStyle}>Highest Qualification:</label>
+              <label className={labelStyle}>Highest Qualification:<span className="text-red-500 text-sm">*</span></label>
               <select 
                 name="highestQualification" 
                 value={formData.highestQualification} 
@@ -351,6 +365,7 @@ export default function CandidateRegistration() {
                 <option value="Degree">Degree / Graduation</option>
                 <option value="PG">Post Graduation (PG)</option>
               </select>
+              <ErrorMsg />
             </div>
 
             {formData.highestQualification && (
@@ -673,7 +688,7 @@ export default function CandidateRegistration() {
             <h2 className={`${sectionTitle} mb-8 border-b border-slate-200 pb-3`}>Additional Information:</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
               
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <label className="text-sm font-semibold text-slate-700">Are you interested in higher studies?</label>
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="higherStudies" value="Yes" checked={formData.higherStudies === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -681,7 +696,7 @@ export default function CandidateRegistration() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <label className="text-sm font-semibold text-slate-700">Are you ready to work in shift?</label>
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="shiftWork" value="Yes" checked={formData.shiftWork === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -689,7 +704,7 @@ export default function CandidateRegistration() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <label className="text-sm font-semibold text-slate-700">Do you have a valid passport?</label>
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="validPassport" value="Yes" checked={formData.validPassport === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -697,7 +712,7 @@ export default function CandidateRegistration() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <label className="text-sm font-semibold text-slate-700">Do you have a valid driving license?</label>
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="validLicense" value="Yes" checked={formData.validLicense === "Yes"} onChange={handleInputChange} /> Yes</label>
@@ -705,7 +720,7 @@ export default function CandidateRegistration() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
                 <label className="text-sm font-semibold text-slate-700">Are you ready to relocate?</label>
                 <div className="flex gap-4">
                   <label className={radioLabel}><input type="radio" name="readyToRelocate" value="Yes" checked={formData.readyToRelocate === "Yes"} onChange={handleInputChange} /> Yes</label>
