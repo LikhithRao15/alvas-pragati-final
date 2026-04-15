@@ -27,7 +27,7 @@ export default function CompanyRegistration() {
     mobileNumber: "",
     companyLogo: null,
     address: "",
-    interviewType: "Offline",
+    
 
     // Section 3: Accommodation
     accRequired: "No",
@@ -92,6 +92,21 @@ export default function CompanyRegistration() {
     const newExecs = [...executives];
     newExecs[index] = { ...newExecs[index], [name]: value };
     setExecutives(newExecs);
+  };
+
+  const handleNumExecutivesChange = (e) => {
+    const num = Math.max(0, parseInt(e.target.value) || 0);
+    setExecutives((prev) => {
+      if (num > prev.length) {
+        const newRows = Array.from({ length: num - prev.length }, () => ({
+          name: "", designation: "", mobile: "", email: "", gender: "Male"
+        }));
+        return [...prev, ...newRows];
+      } else if (num < prev.length) {
+        return prev.slice(0, num);
+      }
+      return prev;
+    });
   };
 
   const addExecutive = () => {
@@ -238,34 +253,50 @@ export default function CompanyRegistration() {
                 </div>
                 <div className={`${inputGroup} sm:col-span-3`}>
                   <label className={labelStyle}>Mobile Number:<span className="text-red-500 text-sm">*</span></label>
-                  <input name="mobileNumber" value={formData.mobileNumber} onChange={handleInputChange} className={inputStyle} required />
+                  <input 
+                    name="mobileNumber" 
+                    value={formData.mobileNumber} 
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                      handleInputChange({ target: { name: 'mobileNumber', value: val } });
+                    }} 
+                    className={inputStyle} 
+                    maxLength="10"
+                    required 
+                  />
                   <ErrorMsg />
                 </div>
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>Company Logo:<span className="text-red-500 text-sm">*</span></label>
-                <input name="companyLogo" type="file" accept="image/*" onChange={handleFileChange} className={`${inputStyle} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 text-slate-500`} required />
-                <ErrorMsg />
+                <label className={labelStyle}>Company Logo:</label>
+                <input name="companyLogo" type="file" accept="image/*" onChange={handleFileChange} className={`${inputStyle} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 text-slate-500`}  />
+                
               </div>
               <div className={`${inputGroup} md:col-span-2`}>
                 <label className={labelStyle}>Address:<span className="text-red-500 text-sm">*</span></label>
                 <textarea name="address" value={formData.address} onChange={handleInputChange} rows="2" className={inputStyle} required />
                 <ErrorMsg />
               </div>
-              <div className={inputGroup}>
-                <label className={labelStyle}>Interview Type:</label>
-                <div className={radioGroup}>
-                  <label className={radioLabel}><input type="radio" name="interviewType" value="Offline" checked={formData.interviewType === "Offline"} onChange={handleInputChange} /> Offline</label>
-                  <label className={radioLabel}><input type="radio" name="interviewType" value="Online" checked={formData.interviewType === "Online"} onChange={handleInputChange} /> Online</label>
-                </div>
-              </div>
+              
             </div>
           </section>
 
           {/* Section 2: Details of the Executive */}
           <section>
             <div className={sectionHeader}>
-              <h2 className={sectionTitle}>Details of the Executive:</h2>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-6">
+                <h2 className={sectionTitle}>Details of the Executive:</h2>
+                <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Number of Executives:</label>
+                  <input 
+                    type="number" 
+                    min="1" 
+                    value={executives.length} 
+                    onChange={handleNumExecutivesChange}
+                    className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-1 text-sm font-bold text-primary focus:ring-2 focus:ring-accent/30 outline-none transition-all"
+                  />
+                </div>
+              </div>
               <button type="button" onClick={addExecutive} className="text-xs font-bold text-accent hover:text-accent-dark transition-colors flex items-center gap-2">
                 <i className="fas fa-plus-circle"></i> Add Executive Detail
               </button>
@@ -286,7 +317,19 @@ export default function CompanyRegistration() {
                     <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
                       <td className="px-4 py-3"><input name="name" value={exec.name} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
                       <td className="px-4 py-3"><input name="designation" value={exec.designation} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
-                      <td className="px-4 py-3"><input name="mobile" value={exec.mobile} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
+                      <td className="px-4 py-3">
+                        <input 
+                          name="mobile" 
+                          value={exec.mobile} 
+                          onChange={(e) => {
+                            const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                            handleExecChange(idx, { target: { name: 'mobile', value: val } });
+                          }} 
+                          className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} 
+                          maxLength="10"
+                          required 
+                        />
+                      </td>
                       <td className="px-4 py-3"><input name="email" value={exec.email} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
                       <td className="px-4 py-3">
                         <div className="flex gap-4">
@@ -388,6 +431,133 @@ export default function CompanyRegistration() {
             </section>
           </div>
 
+          <section>
+            <div className={sectionHeader}>
+              <h2 className={sectionTitle}>Current Openings</h2>
+              <button type="button" onClick={addOpening} className="text-xs font-bold text-accent hover:text-accent-dark transition-colors flex items-center gap-2">
+                <i className="fas fa-plus-circle"></i> Add Opening
+              </button>
+            </div>
+            <p className="text-[10px] text-slate-400 font-bold mb-4">*Please mark NA for cut off percentage if not required.</p>
+            <div className="w-full overflow-x-auto rounded-3xl border border-slate-100 shadow-sm pb-40">
+              <table className="w-full text-left text-[11px] border-collapse min-w-[1200px]">
+                <thead className="bg-primary/5 border-b border-primary/10 font-bold text-primary uppercase">
+                  <tr>
+                    <th className="px-4 py-4 min-w-[80px]">*No of Vacancies</th>
+                    <th className="px-4 py-4 min-w-[120px]">*Designation/Position</th>
+                    <th className="px-4 py-4 min-w-[130px]">Qualification</th>
+                    <th className="px-4 py-4 min-w-[130px]">Course</th>
+                    <th className="px-4 py-4 min-w-[90px]">*From CTC(L/A)</th>
+                    <th className="px-4 py-4 min-w-[90px]">*To CTC(L/A)</th>
+                    <th className="px-4 py-4 min-w-[80px]">*Cut Off%</th>
+                    <th className="px-4 py-4 min-w-[100px]">*Job Location</th>
+                    <th className="px-4 py-4 min-w-[150px]">*Job Description</th>
+                    <th className="px-4 py-4 min-w-[80px]">Exp From</th>
+                    <th className="px-4 py-4 min-w-[80px]">Exp To</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {openings.map((op, idx) => (
+                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
+                      <td className="px-2 py-3"><input name="vacancies" value={op.vacancies} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required={idx === 0} /></td>
+                      <td className="px-2 py-3"><input name="designation" value={op.designation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required={idx === 0} /></td>
+                      <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
+                        <div 
+                          onClick={() => setOpenDropdown(openDropdown === `qual-${idx}` ? null : `qual-${idx}`)}
+                          className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px]"
+                        >
+                          <span className="truncate pr-1 block w-[100px]">
+                            {Array.isArray(op.qualification) && op.qualification.length > 0 ? op.qualification.join(", ") : "Select"}
+                          </span>
+                          <span className="text-slate-400">▼</span>
+                        </div>
+                        {openDropdown === `qual-${idx}` && (
+                          <div className="absolute z-50 left-2 top-11 w-40 bg-white border border-slate-200 rounded-lg shadow-2xl p-2 space-y-1">
+                            {["SSLC", "PUC", "ITI", "Diploma", "Degree", "PG", "Doctorate"].map(q => {
+                              const isChecked = Array.isArray(op.qualification) ? op.qualification.includes(q) : op.qualification === q;
+                              return (
+                                <label key={q} className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 py-1 rounded px-1">
+                                  <input 
+                                    type="checkbox" 
+                                    checked={isChecked} 
+                                    onChange={(e) => {
+                                      let newQuals = Array.isArray(op.qualification) ? [...op.qualification] : (op.qualification ? [op.qualification] : []);
+                                      if (e.target.checked) newQuals.push(q);
+                                      else newQuals = newQuals.filter(v => v !== q);
+                                      handleOpeningChange(idx, { target: { name: "qualification", value: newQuals } });
+                                    }} 
+                                    className="w-3 h-3 text-accent border-slate-300 rounded focus:ring-accent/30"
+                                  />
+                                  {q}
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
+                        <div 
+                          onClick={() => { if(getAvailableCourses(op.qualification).length > 0) setOpenDropdown(openDropdown === `course-${idx}` ? null : `course-${idx}`) }}
+                          className={`w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px] ${getAvailableCourses(op.qualification).length === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+                        >
+                          <span className="truncate pr-1 block w-[110px]">
+                             {Array.isArray(op.course) && op.course.length > 0 ? op.course.join(", ") : "Select"}
+                          </span>
+                          <span className="text-slate-400">▼</span>
+                        </div>
+                        {openDropdown === `course-${idx}` && (
+                          <div className="absolute z-50 left-2 top-11 w-48 bg-white border border-slate-200 rounded-lg shadow-2xl p-2 space-y-1">
+                            {getAvailableCourses(op.qualification).map((courseOption, cIdx) => {
+                              const isChecked = Array.isArray(op.course) ? op.course.includes(courseOption) : op.course === courseOption;
+                              return (
+                                <label key={cIdx} className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 py-1 rounded px-1">
+                                  <input 
+                                    type="checkbox" 
+                                    checked={isChecked} 
+                                    onChange={(e) => {
+                                      let newCourses = Array.isArray(op.course) ? [...op.course] : (op.course ? [op.course] : []);
+                                      if (e.target.checked) newCourses.push(courseOption);
+                                      else newCourses = newCourses.filter(v => v !== courseOption);
+                                      handleOpeningChange(idx, { target: { name: "course", value: newCourses } });
+                                    }} 
+                                    className="w-3 h-3 text-accent border-slate-300 rounded focus:ring-accent/30"
+                                  />
+                                  {courseOption}
+                                </label>
+                              );
+                            })}
+                          </div>
+                        )}
+                      </td>
+
+                      <td className="px-2 py-3"><input name="fromCTC" value={op.fromCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required={idx === 0} /></td>
+                      <td className="px-2 py-3"><input name="toCTC" value={op.toCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`}  /></td>
+                      <td className="px-2 py-3"><input name="cutOff" value={op.cutOff} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`}  /></td>
+                      <td className="px-2 py-3"><input name="jobLocation" value={op.jobLocation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`}  /></td>
+                      <td className="px-2 py-3"><textarea name="jobDescription" value={op.jobDescription} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} rows="1"  /></td>
+                      <td className="px-2 py-3">
+                        <select name="expFrom" value={op.expFrom} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
+                          <option>Exp</option>
+                          <option>0</option>
+                          <option>1</option>
+                          <option>3</option>
+                        </select>
+                      </td>
+                      <td className="px-2 py-3">
+                        <select name="expTo" value={op.expTo} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
+                          <option>Exp</option>
+                          <option>2</option>
+                          <option>5</option>
+                          <option>7</option>
+                        </select>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
           {/* Section 4: Facilities Required */}
           <section>
             <div className={sectionHeader}>
@@ -480,132 +650,7 @@ export default function CompanyRegistration() {
           </section>
 
           {/* Section 5: Current Openings */}
-          <section>
-            <div className={sectionHeader}>
-              <h2 className={sectionTitle}>Current Openings</h2>
-              <button type="button" onClick={addOpening} className="text-xs font-bold text-accent hover:text-accent-dark transition-colors flex items-center gap-2">
-                <i className="fas fa-plus-circle"></i> Add Opening
-              </button>
-            </div>
-            <p className="text-[10px] text-slate-400 font-bold mb-4">*Please mark NA for cut off percentage if not required.</p>
-            <div className="w-full overflow-x-auto rounded-3xl border border-slate-100 shadow-sm pb-40">
-              <table className="w-full text-left text-[11px] border-collapse min-w-[1200px]">
-                <thead className="bg-primary/5 border-b border-primary/10 font-bold text-primary uppercase">
-                  <tr>
-                    <th className="px-4 py-4 min-w-[80px]">*No of Vacancies</th>
-                    <th className="px-4 py-4 min-w-[120px]">*Designation/Position</th>
-                    <th className="px-4 py-4 min-w-[130px]">Qualification</th>
-                    <th className="px-4 py-4 min-w-[130px]">Course</th>
-                    <th className="px-4 py-4 min-w-[90px]">*From CTC(L/A)</th>
-                    <th className="px-4 py-4 min-w-[90px]">*To CTC(L/A)</th>
-                    <th className="px-4 py-4 min-w-[80px]">*Cut Off%</th>
-                    <th className="px-4 py-4 min-w-[100px]">*Job Location</th>
-                    <th className="px-4 py-4 min-w-[150px]">*Job Description</th>
-                    <th className="px-4 py-4 min-w-[80px]">Exp From</th>
-                    <th className="px-4 py-4 min-w-[80px]">Exp To</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {openings.map((op, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-2 py-3"><input name="vacancies" value={op.vacancies} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
-                      <td className="px-2 py-3"><input name="designation" value={op.designation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
-                      <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
-                        <div 
-                          onClick={() => setOpenDropdown(openDropdown === `qual-${idx}` ? null : `qual-${idx}`)}
-                          className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px]"
-                        >
-                          <span className="truncate pr-1 block w-[100px]">
-                            {Array.isArray(op.qualification) && op.qualification.length > 0 ? op.qualification.join(", ") : "Select"}
-                          </span>
-                          <span className="text-slate-400">▼</span>
-                        </div>
-                        {openDropdown === `qual-${idx}` && (
-                          <div className="absolute z-50 left-2 top-11 w-40 bg-white border border-slate-200 rounded-lg shadow-2xl p-2 space-y-1">
-                            {["SSLC", "PUC", "ITI", "Diploma", "Degree", "PG", "Doctorate"].map(q => {
-                              const isChecked = Array.isArray(op.qualification) ? op.qualification.includes(q) : op.qualification === q;
-                              return (
-                                <label key={q} className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 py-1 rounded px-1">
-                                  <input 
-                                    type="checkbox" 
-                                    checked={isChecked} 
-                                    onChange={(e) => {
-                                      let newQuals = Array.isArray(op.qualification) ? [...op.qualification] : (op.qualification ? [op.qualification] : []);
-                                      if (e.target.checked) newQuals.push(q);
-                                      else newQuals = newQuals.filter(v => v !== q);
-                                      handleOpeningChange(idx, { target: { name: "qualification", value: newQuals } });
-                                    }} 
-                                    className="w-3 h-3 text-accent border-slate-300 rounded focus:ring-accent/30"
-                                  />
-                                  {q}
-                                </label>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </td>
-                      <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
-                        <div 
-                          onClick={() => { if(getAvailableCourses(op.qualification).length > 0) setOpenDropdown(openDropdown === `course-${idx}` ? null : `course-${idx}`) }}
-                          className={`w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px] ${getAvailableCourses(op.qualification).length === 0 ? 'opacity-50 pointer-events-none' : ''}`}
-                        >
-                          <span className="truncate pr-1 block w-[110px]">
-                             {Array.isArray(op.course) && op.course.length > 0 ? op.course.join(", ") : "Select"}
-                          </span>
-                          <span className="text-slate-400">▼</span>
-                        </div>
-                        {openDropdown === `course-${idx}` && (
-                          <div className="absolute z-50 left-2 top-11 w-48 bg-white border border-slate-200 rounded-lg shadow-2xl p-2 space-y-1">
-                            {getAvailableCourses(op.qualification).map((courseOption, cIdx) => {
-                              const isChecked = Array.isArray(op.course) ? op.course.includes(courseOption) : op.course === courseOption;
-                              return (
-                                <label key={cIdx} className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 py-1 rounded px-1">
-                                  <input 
-                                    type="checkbox" 
-                                    checked={isChecked} 
-                                    onChange={(e) => {
-                                      let newCourses = Array.isArray(op.course) ? [...op.course] : (op.course ? [op.course] : []);
-                                      if (e.target.checked) newCourses.push(courseOption);
-                                      else newCourses = newCourses.filter(v => v !== courseOption);
-                                      handleOpeningChange(idx, { target: { name: "course", value: newCourses } });
-                                    }} 
-                                    className="w-3 h-3 text-accent border-slate-300 rounded focus:ring-accent/30"
-                                  />
-                                  {courseOption}
-                                </label>
-                              );
-                            })}
-                          </div>
-                        )}
-                      </td>
-
-                      <td className="px-2 py-3"><input name="fromCTC" value={op.fromCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
-                      <td className="px-2 py-3"><input name="toCTC" value={op.toCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
-                      <td className="px-2 py-3"><input name="cutOff" value={op.cutOff} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
-                      <td className="px-2 py-3"><input name="jobLocation" value={op.jobLocation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required /></td>
-                      <td className="px-2 py-3"><textarea name="jobDescription" value={op.jobDescription} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} rows="1" required /></td>
-                      <td className="px-2 py-3">
-                        <select name="expFrom" value={op.expFrom} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
-                          <option>Exp</option>
-                          <option>0</option>
-                          <option>1</option>
-                          <option>3</option>
-                        </select>
-                      </td>
-                      <td className="px-2 py-3">
-                        <select name="expTo" value={op.expTo} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
-                          <option>Exp</option>
-                          <option>2</option>
-                          <option>5</option>
-                          <option>7</option>
-                        </select>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
+          
 
           {/* Form Actions */}
           <div className="flex flex-col sm:flex-row items-center justify-end gap-5 pt-16 border-t border-slate-100 mt-16">
