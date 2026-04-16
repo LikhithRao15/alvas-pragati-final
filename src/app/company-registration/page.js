@@ -441,20 +441,20 @@ export default function CompanyRegistration() {
             </div>
             <p className="text-[10px] text-slate-400 font-bold mb-4">*Please mark NA for cut off percentage if not required.</p>
             <div className="w-full overflow-x-auto rounded-3xl border-2 border-slate-500 shadow-2xl pb-40 bg-white">
-              <table className="w-full text-left text-[11px] border-collapse min-w-[1200px]">
+              <table className="w-full text-left text-[11px] border-collapse min-w-full">
                 <thead className="bg-slate-300 border-b-2 border-slate-500 font-bold text-black uppercase tracking-widest text-[9px]">
                   <tr>
-                    <th className="px-4 py-4 min-w-[80px]">*No of Vacancies</th>
-                    <th className="px-4 py-4 min-w-[120px]">*Designation/Position</th>
-                    <th className="px-4 py-4 min-w-[130px]">Qualification</th>
-                    <th className="px-4 py-4 min-w-[130px]">Course</th>
-                    <th className="px-4 py-4 min-w-[90px]">*From CTC(L/A)</th>
-                    <th className="px-4 py-4 min-w-[90px]">*To CTC(L/A)</th>
-                    <th className="px-4 py-4 min-w-[80px]">*Cut Off%</th>
-                    <th className="px-4 py-4 min-w-[100px]">*Job Location</th>
-                    <th className="px-4 py-4 min-w-[150px]">*Job Description</th>
-                    <th className="px-4 py-4 min-w-[80px]">Exp From</th>
-                    <th className="px-4 py-4 min-w-[80px]">Exp To</th>
+                    <th className="px-3 py-4 min-w-[70px]">*Vacancies</th>
+                    <th className="px-3 py-4 min-w-[140px]">*Designation</th>
+                    <th className="px-3 py-4 min-w-[110px]">Qualification</th>
+                    <th className="px-3 py-4 min-w-[120px]">Course</th>
+                    <th className="px-3 py-4 min-w-[80px]">*From CTC</th>
+                    <th className="px-3 py-4 min-w-[80px]">*To CTC</th>
+                    <th className="px-3 py-4 min-w-[70px]">*Cut Off</th>
+                    <th className="px-3 py-4 min-w-[90px]">*Location</th>
+                    <th className="px-3 py-4 min-w-[180px]">*Job Description</th>
+                    <th className="px-3 py-4 min-w-[70px]">Exp From</th>
+                    <th className="px-3 py-4 min-w-[70px]">Exp To</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
