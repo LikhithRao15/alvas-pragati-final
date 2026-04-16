@@ -192,7 +192,8 @@ export default function CandidateRegistration() {
                   <thead className="bg-slate-50 font-bold text-slate-500 text-[11px] uppercase tracking-wider">
                     <tr>
                       <th className="px-6 py-4">Level</th>
-                      <th className="px-6 py-4">Course/Stream</th>
+                      <th className="px-6 py-4">Course</th>
+                      <th className="px-6 py-4">Stream</th>
                       <th className="px-6 py-4">Mode</th>
                       <th className="px-6 py-4">Year</th>
                       <th className="px-6 py-4">Marks</th>
@@ -229,7 +230,8 @@ export default function CandidateRegistration() {
                     ].filter(item => item.show && !item.d.isNotApplicable).map((item, idx) => (
                       <tr key={idx} className="text-xs">
                         <td className="px-6 py-4 font-bold">{item.l}</td>
-                        <td className="px-6 py-4">{item.d.course || (item.d.stream ? `${item.d.stream}` : "N/A")} {item.d.stream && `(${item.d.stream})`}</td>
+                        <td className="px-6 py-4">{item.d.course || "N/A"}</td>
+                        <td className="px-6 py-4">{item.d.stream || "N/A"}</td>
                         <td className="px-6 py-4">{item.d.mode}</td>
                         <td className="px-6 py-4">{item.d.year}</td>
                         <td className="px-6 py-4 font-semibold text-accent">{item.d.marks}</td>
@@ -395,11 +397,12 @@ export default function CandidateRegistration() {
                   <thead className="bg-slate-300 border-b-2 border-slate-500 uppercase tracking-wider text-[10px] font-bold text-black tracking-widest">
                     <tr>
                       <th className="px-4 py-4 w-16">N/A</th>
-                      <th className="px-6 py-4 w-1/4">Education Level</th>
-                      <th className="px-6 py-4">Course / Stream</th>
+                      <th className="px-6 py-4 w-1/5">Education Level</th>
+                      <th className="px-6 py-4 w-1/5">Course</th>
+                      <th className="px-6 py-4 w-1/5">Stream</th>
                       <th className="px-6 py-4">Mode</th>
                       <th className="px-6 py-4">Year of Passing</th>
-                      <th className="px-6 py-4">Marks / %</th>
+                      <th className="px-6 py-4">Marks / Grade</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
@@ -408,6 +411,7 @@ export default function CandidateRegistration() {
                       <td className="px-4 py-4"><input type="checkbox" checked={formData.sslc.isNotApplicable} onChange={(e) => handleAcademicChange("sslc", "isNotApplicable", e.target.checked)} /></td>
                       <td className="px-6 py-4 font-bold text-primary">SSLC</td>
                       <td className="px-6 py-4 text-slate-400 italic text-xs">Standardized</td>
+                      <td className="px-6 py-4 text-slate-400 italic text-xs">N/A</td>
                       <td className="px-6 py-4">
                         <select disabled={formData.sslc.isNotApplicable} name="sslc-mode" value={formData.sslc.mode} onChange={(e) => handleAcademicChange("sslc", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight">
                           <option>Regular</option>
@@ -436,6 +440,7 @@ export default function CandidateRegistration() {
                             <option>Arts</option>
                           </select>
                         </td>
+                        <td className="px-6 py-4 text-slate-400 italic text-xs">N/A</td>
                         <td className="px-6 py-4">
                           <select disabled={formData.puc.isNotApplicable} name="puc-mode" value={formData.puc.mode} onChange={(e) => handleAcademicChange("puc", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight">
                             <option>Regular</option>
@@ -474,6 +479,7 @@ export default function CandidateRegistration() {
                             <option>Computer Operator and Programming Assistant (COPA)</option>
                           </select>
                         </td>
+                        <td className="px-6 py-4 text-slate-400 italic text-xs">N/A</td>
                         <td className="px-6 py-4">
                           <select disabled={formData.iti.isNotApplicable} name="iti-mode" value={formData.iti.mode} onChange={(e) => handleAcademicChange("iti", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight">
                             <option>Regular</option>
@@ -512,6 +518,7 @@ export default function CandidateRegistration() {
                             <option>Interior Design</option>
                           </select>
                         </td>
+                        <td className="px-6 py-4 text-slate-400 italic text-xs">N/A</td>
                         <td className="px-6 py-4">
                           <select disabled={formData.diploma.isNotApplicable} name="diploma-mode" value={formData.diploma.mode} onChange={(e) => handleAcademicChange("diploma", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight">
                             <option>Regular</option>
@@ -533,7 +540,7 @@ export default function CandidateRegistration() {
                       <tr className={`transition-colors ${formData.degree.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
                         <td className="px-4 py-4"><input type="checkbox" checked={formData.degree.isNotApplicable} onChange={(e) => handleAcademicChange("degree", "isNotApplicable", e.target.checked)} /></td>
                         <td className="px-6 py-4 font-bold text-primary">Graduation (Degree)</td>
-                        <td className="px-6 py-4 flex flex-col gap-2">
+                        <td className="px-6 py-4">
                           <select disabled={formData.degree.isNotApplicable} value={formData.degree.course} onChange={(e) => {
                             handleAcademicChange("degree", "course", e.target.value);
                             handleAcademicChange("degree", "stream", "");
@@ -564,15 +571,18 @@ export default function CandidateRegistration() {
                             <option>LLB</option>
                             <option>MBBS</option>
                             <option>Microbiology</option>
-                           
                           </select>
-                          {degreeStreamsMap[formData.degree.course] && (
-                            <select disabled={formData.degree.isNotApplicable} value={formData.degree.stream} onChange={(e) => handleAcademicChange("degree", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight focus:outline-none text-[10px] mt-2">
+                        </td>
+                        <td className="px-6 py-4">
+                          {degreeStreamsMap[formData.degree.course] ? (
+                            <select disabled={formData.degree.isNotApplicable} value={formData.degree.stream} onChange={(e) => handleAcademicChange("degree", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight focus:outline-none text-xs">
                               <option value="">Select Stream</option>
                               {degreeStreamsMap[formData.degree.course].map(stream => (
                                 <option key={stream} value={stream}>{stream}</option>
                               ))}
                             </select>
+                          ) : (
+                            <span className="text-slate-400 italic text-xs">N/A</span>
                           )}
                         </td>
                         <td className="px-6 py-4">
@@ -596,7 +606,7 @@ export default function CandidateRegistration() {
                       <tr className={`transition-colors ${formData.pg.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
                         <td className="px-4 py-4"><input type="checkbox" checked={formData.pg.isNotApplicable} onChange={(e) => handleAcademicChange("pg", "isNotApplicable", e.target.checked)} /></td>
                         <td className="px-6 py-4 font-bold text-primary">Post Graduation</td>
-                        <td className="px-6 py-4 flex flex-col gap-2">
+                        <td className="px-6 py-4">
                            <select disabled={formData.pg.isNotApplicable} value={formData.pg.course} onChange={(e) => {
                              handleAcademicChange("pg", "course", e.target.value);
                              handleAcademicChange("pg", "stream", "");
@@ -622,13 +632,17 @@ export default function CandidateRegistration() {
                             <option>MPT</option>
                             <option>PGDDC</option>
                           </select>
-                          {pgStreamsMap[formData.pg.course] && (
-                            <select disabled={formData.pg.isNotApplicable} value={formData.pg.stream} onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight focus:outline-none text-[10px] mt-2">
+                        </td>
+                        <td className="px-6 py-4">
+                          {pgStreamsMap[formData.pg.course] ? (
+                            <select disabled={formData.pg.isNotApplicable} value={formData.pg.stream} onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight focus:outline-none text-xs">
                               <option value="">Select Stream</option>
                               {pgStreamsMap[formData.pg.course].map(stream => (
                                 <option key={stream} value={stream}>{stream}</option>
                               ))}
                             </select>
+                          ) : (
+                            <span className="text-slate-400 italic text-xs">N/A</span>
                           )}
                         </td>
                         <td className="px-6 py-4">
@@ -713,7 +727,7 @@ export default function CandidateRegistration() {
               <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
                 <label className={labelStyle}>Industry Aspiration:</label>
                 <div className="flex flex-wrap gap-x-4 gap-y-3 mt-1 bg-slate-100 p-4 rounded-xl border-2 border-slate-500 shadow-md">
-                  {["Automobile", "Banking and Financial Services", "Construction", "Defence", "Education/NGO", "Healthcare", "Hospitality", "HR Consultancy", "Infrastructure", "IT&ITES", "Manufacturing", "Media", "Pharmaceuticals", "Retail and Sales", "Telecom"].map(industry => (
+                  {["Automobile", "Banking and Financial Services", "Construction", "Defence", "Education/NGO", "Healthcare", "Hospitality", "Infrastructure", "IT&ITES", "Manufacturing", "Media", "Pharmaceuticals", "Retail and Sales", "Telecom"].map(industry => (
                     <label key={industry} className="flex items-center gap-2 text-sm text-black font-bold cursor-pointer bg-white px-3 py-1.5 rounded-lg border-2 border-slate-400 shadow-sm hover:border-black transition-all">
                       <input 
                         type="checkbox" 

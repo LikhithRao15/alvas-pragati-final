@@ -27,7 +27,7 @@ export default function CompanyRegistration() {
     mobileNumber: "",
     companyLogo: null,
     address: "",
-    
+
 
     // Section 3: Accommodation
     accRequired: "No",
@@ -56,6 +56,7 @@ export default function CompanyRegistration() {
     groupDiscussion: "No",
     gdPurpose: "",
     gdRequirements: "",
+    additionalNotes: "",
   });
 
   // Section 2: Details of the Executive (Visiting)
@@ -117,12 +118,12 @@ export default function CompanyRegistration() {
     const { name, value, type, options } = e.target;
     const newOpenings = [...openings];
     newOpenings[index] = { ...newOpenings[index] };
-    
+
     if (type === "select-multiple") {
-       const selectedValues = Array.from(options).filter(op => op.selected).map(op => op.value);
-       newOpenings[index][name] = selectedValues;
+      const selectedValues = Array.from(options).filter(op => op.selected).map(op => op.value);
+      newOpenings[index][name] = selectedValues;
     } else {
-       newOpenings[index][name] = value;
+      newOpenings[index][name] = value;
     }
 
     if (name === "qualification") {
@@ -153,16 +154,16 @@ export default function CompanyRegistration() {
   const sectionHeader = "border-b-2 border-accent/20 pb-2 mb-8 mt-12 flex items-center justify-between";
   const sectionTitle = "text-xl font-bold text-primary font-heading uppercase tracking-wider";
   const inputGroup = "flex flex-col gap-1.5 relative";
-  const labelStyle = "text-[11px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1";
-  
-  const baseInputStyle = "px-4 py-2.5 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm w-full peer";
-  const inputStyle = submitted ? `${baseInputStyle} border-slate-200 invalid:border-red-500 invalid:bg-red-50` : `${baseInputStyle} border-slate-200`;
-  const baseSelectStyle = "px-4 py-2.5 bg-slate-50 border rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/30 transition-all text-sm appearance-none cursor-pointer w-full peer";
-  const selectStyle = submitted ? `${baseSelectStyle} border-slate-200 invalid:border-red-500 invalid:bg-red-50` : `${baseSelectStyle} border-slate-200`;
-  
+  const labelStyle = "text-[11px] font-bold text-slate-900 uppercase tracking-widest flex items-center gap-1";
+
+  const baseInputStyle = "px-4 py-2.5 bg-white border-2 border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-sm w-full peer placeholder:text-slate-600 text-black font-semibold shadow-md hover:border-black";
+  const inputStyle = submitted ? `${baseInputStyle} invalid:border-red-500 invalid:bg-red-50` : `${baseInputStyle}`;
+  const baseSelectStyle = "px-4 py-2.5 bg-white border-2 border-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-sm appearance-none cursor-pointer w-full peer text-black font-semibold shadow-md hover:border-black";
+  const selectStyle = submitted ? `${baseSelectStyle} invalid:border-red-500 invalid:bg-red-50` : `${baseSelectStyle}`;
+
   const ErrorMsg = () => submitted ? <span className="hidden peer-invalid:block text-red-500 text-[10px] mt-0.5 font-semibold">This field is required</span> : null;
   const radioGroup = "flex flex-wrap items-center gap-4 sm:gap-6 mt-1";
-  const radioLabel = "flex items-center gap-2 text-sm text-slate-700 cursor-pointer";
+  const radioLabel = "flex items-center gap-2 text-sm text-black cursor-pointer hover:text-accent font-bold";
 
   const getAvailableCourses = (qualifications) => {
     if (!qualifications) return [];
@@ -186,7 +187,7 @@ export default function CompanyRegistration() {
           <p className="text-slate-500 font-medium">Please fill in the comprehensive details below to register for the placement drive.</p>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="bg-white rounded-3xl sm:rounded-[2.5rem] shadow-2xl shadow-slate-200/50 p-5 sm:p-8 md:p-14 border border-white">
+        <form onSubmit={handleSubmit} noValidate className="bg-white rounded-3xl sm:rounded-[2.5rem] shadow-2xl shadow-slate-300 p-5 sm:p-8 md:p-14 border-2 border-slate-400">
 
           {/* Section 1: Company Profile */}
           <section>
@@ -212,14 +213,14 @@ export default function CompanyRegistration() {
                   <option>Education/NGO</option>
                   <option>Healthcare </option>
                   <option>Hospitality </option>
-                  <option>HR Consultancy </option>
+
                   <option>Infrastructure</option>
                   <option>IT/ITES</option>
                   <option>Logistics</option>
                   <option>Manufacturing</option>
                   <option>Media</option>
                   <option>Pharmaceuticals</option>
-                  <option>Reatail & Sales</option>
+                  <option>Retail & Sales</option>
                   <option>Telecom</option>
                   <option>Other</option>
                 </select>
@@ -253,31 +254,31 @@ export default function CompanyRegistration() {
                 </div>
                 <div className={`${inputGroup} sm:col-span-3`}>
                   <label className={labelStyle}>Mobile Number:<span className="text-red-500 text-sm">*</span></label>
-                  <input 
-                    name="mobileNumber" 
-                    value={formData.mobileNumber} 
+                  <input
+                    name="mobileNumber"
+                    value={formData.mobileNumber}
                     onChange={(e) => {
                       const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                       handleInputChange({ target: { name: 'mobileNumber', value: val } });
-                    }} 
-                    className={inputStyle} 
+                    }}
+                    className={inputStyle}
                     maxLength="10"
-                    required 
+                    required
                   />
                   <ErrorMsg />
                 </div>
               </div>
               <div className={inputGroup}>
                 <label className={labelStyle}>Company Logo:</label>
-                <input name="companyLogo" type="file" accept="image/*" onChange={handleFileChange} className={`${inputStyle} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 text-slate-500`}  />
-                
+                <input name="companyLogo" type="file" accept="image/*" onChange={handleFileChange} className={`${inputStyle} file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20 text-slate-500`} />
+
               </div>
               <div className={`${inputGroup} md:col-span-2`}>
                 <label className={labelStyle}>Address:<span className="text-red-500 text-sm">*</span></label>
                 <textarea name="address" value={formData.address} onChange={handleInputChange} rows="2" className={inputStyle} required />
                 <ErrorMsg />
               </div>
-              
+
             </div>
           </section>
 
@@ -286,14 +287,14 @@ export default function CompanyRegistration() {
             <div className={sectionHeader}>
               <div className="flex flex-col sm:flex-row sm:items-center gap-6">
                 <h2 className={sectionTitle}>Details of the Executive:</h2>
-                <div className="flex items-center gap-3 bg-slate-50 px-4 py-2 rounded-2xl border border-slate-100">
-                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Number of Executives:</label>
-                  <input 
-                    type="number" 
-                    min="1" 
-                    value={executives.length} 
+                <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-2xl border-2 border-slate-500 shadow-md">
+                  <label className="text-[10px] font-bold text-slate-900 uppercase tracking-widest">Number of Executives:</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={executives.length}
                     onChange={handleNumExecutivesChange}
-                    className="w-16 bg-white border border-slate-200 rounded-lg px-2 py-1 text-sm font-bold text-primary focus:ring-2 focus:ring-accent/30 outline-none transition-all"
+                    className="w-16 bg-white border-b-2 border-slate-400 rounded-lg px-2 py-1 text-sm font-bold text-primary focus:ring-2 focus:ring-accent/30 outline-none transition-all"
                   />
                 </div>
               </div>
@@ -301,9 +302,9 @@ export default function CompanyRegistration() {
                 <i className="fas fa-plus-circle"></i> Add Executive Detail
               </button>
             </div>
-            <div className="overflow-x-auto rounded-2xl border border-slate-100 shadow-sm">
+            <div className="overflow-x-auto rounded-2xl border-2 border-slate-500 shadow-2xl bg-white">
               <table className="w-full text-left text-sm border-collapse min-w-[800px]">
-                <thead className="bg-slate-50/80 border-b border-slate-100 uppercase tracking-wider text-[10px] font-bold text-slate-400">
+                <thead className="bg-slate-300 border-b-2 border-slate-500 uppercase tracking-wider text-[10px] font-bold text-black tracking-widest">
                   <tr>
                     <th className="px-6 py-4">*Name of the Executive visiting</th>
                     <th className="px-6 py-4">*Designation/Position</th>
@@ -315,22 +316,22 @@ export default function CompanyRegistration() {
                 <tbody className="divide-y divide-slate-50">
                   {executives.map((exec, idx) => (
                     <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
-                      <td className="px-4 py-3"><input name="name" value={exec.name} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
-                      <td className="px-4 py-3"><input name="designation" value={exec.designation} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
+                      <td className="px-4 py-3"><input name="name" value={exec.name} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-500' : 'border-slate-500'}`} required /></td>
+                      <td className="px-4 py-3"><input name="designation" value={exec.designation} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-500' : 'border-slate-500'}`} required /></td>
                       <td className="px-4 py-3">
-                        <input 
-                          name="mobile" 
-                          value={exec.mobile} 
+                        <input
+                          name="mobile"
+                          value={exec.mobile}
                           onChange={(e) => {
                             const val = e.target.value.replace(/\D/g, '').slice(0, 10);
                             handleExecChange(idx, { target: { name: 'mobile', value: val } });
-                          }} 
-                          className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} 
+                          }}
+                          className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-500' : 'border-slate-500'}`}
                           maxLength="10"
-                          required 
+                          required
                         />
                       </td>
-                      <td className="px-4 py-3"><input name="email" value={exec.email} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-gray-400' : 'border-gray-400'}`} required /></td>
+                      <td className="px-4 py-3"><input name="email" value={exec.email} onChange={(e) => handleExecChange(idx, e)} className={`w-full bg-transparent p-2 outline-none border-b-2 focus:border-accent transition-colors peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-500' : 'border-slate-500'}`} required /></td>
                       <td className="px-4 py-3">
                         <div className="flex gap-4">
                           <label className="flex items-center gap-1.5 text-xs"><input type="radio" name={`gender-${idx}`} value="Male" checked={exec.gender === "Male"} onChange={(e) => handleExecChange(idx, { target: { name: 'gender', value: 'Male' } })} /> M</label>
@@ -347,7 +348,7 @@ export default function CompanyRegistration() {
           {/* Section 3: Accommodation & Transportation */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-4">
             {/* Accommodation */}
-            <section className="bg-slate-50/50 p-8 rounded-3xl border border-slate-100">
+            <section className="bg-slate-50/50 p-8 rounded-3xl border-2 border-slate-400 shadow-xl">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 mb-8 border-b border-slate-200 pb-3">
                 <h3 className="font-bold text-primary tracking-tight">Accommodation Details :</h3>
                 <div className="flex gap-4">
@@ -386,7 +387,7 @@ export default function CompanyRegistration() {
             </section>
 
             {/* Transportation */}
-            <section className="bg-slate-50/50 p-8 rounded-3xl border border-slate-100">
+            <section className="bg-slate-50/50 p-8 rounded-3xl border-2 border-slate-400 shadow-xl">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-0 mb-8 border-b border-slate-200 pb-3">
                 <h3 className="font-bold text-primary tracking-tight">Transportation Required:</h3>
                 <div className="flex gap-4">
@@ -439,9 +440,9 @@ export default function CompanyRegistration() {
               </button>
             </div>
             <p className="text-[10px] text-slate-400 font-bold mb-4">*Please mark NA for cut off percentage if not required.</p>
-            <div className="w-full overflow-x-auto rounded-3xl border border-slate-100 shadow-sm pb-40">
+            <div className="w-full overflow-x-auto rounded-3xl border-2 border-slate-500 shadow-2xl pb-40 bg-white">
               <table className="w-full text-left text-[11px] border-collapse min-w-[1200px]">
-                <thead className="bg-primary/5 border-b border-primary/10 font-bold text-primary uppercase">
+                <thead className="bg-slate-300 border-b-2 border-slate-500 font-bold text-black uppercase tracking-widest text-[9px]">
                   <tr>
                     <th className="px-4 py-4 min-w-[80px]">*No of Vacancies</th>
                     <th className="px-4 py-4 min-w-[120px]">*Designation/Position</th>
@@ -459,12 +460,12 @@ export default function CompanyRegistration() {
                 <tbody className="divide-y divide-slate-100">
                   {openings.map((op, idx) => (
                     <tr key={idx} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-2 py-3"><input name="vacancies" value={op.vacancies} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required={idx === 0} /></td>
-                      <td className="px-2 py-3"><input name="designation" value={op.designation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required={idx === 0} /></td>
+                      <td className="px-2 py-3"><input name="vacancies" value={op.vacancies} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border-2 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-400' : 'border-slate-400'}`} required={idx === 0} /></td>
+                      <td className="px-2 py-3"><input name="designation" value={op.designation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border-2 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-400' : 'border-slate-400'}`} required={idx === 0} /></td>
                       <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
-                        <div 
+                        <div
                           onClick={() => setOpenDropdown(openDropdown === `qual-${idx}` ? null : `qual-${idx}`)}
-                          className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px]"
+                          className="w-full bg-white border-2 border-slate-400 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px] text-black font-bold shadow-sm"
                         >
                           <span className="truncate pr-1 block w-[100px]">
                             {Array.isArray(op.qualification) && op.qualification.length > 0 ? op.qualification.join(", ") : "Select"}
@@ -477,15 +478,15 @@ export default function CompanyRegistration() {
                               const isChecked = Array.isArray(op.qualification) ? op.qualification.includes(q) : op.qualification === q;
                               return (
                                 <label key={q} className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 py-1 rounded px-1">
-                                  <input 
-                                    type="checkbox" 
-                                    checked={isChecked} 
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
                                     onChange={(e) => {
                                       let newQuals = Array.isArray(op.qualification) ? [...op.qualification] : (op.qualification ? [op.qualification] : []);
                                       if (e.target.checked) newQuals.push(q);
                                       else newQuals = newQuals.filter(v => v !== q);
                                       handleOpeningChange(idx, { target: { name: "qualification", value: newQuals } });
-                                    }} 
+                                    }}
                                     className="w-3 h-3 text-accent border-slate-300 rounded focus:ring-accent/30"
                                   />
                                   {q}
@@ -496,12 +497,12 @@ export default function CompanyRegistration() {
                         )}
                       </td>
                       <td className="px-2 py-3 align-top relative" onMouseLeave={() => setOpenDropdown(null)}>
-                        <div 
-                          onClick={() => { if(getAvailableCourses(op.qualification).length > 0) setOpenDropdown(openDropdown === `course-${idx}` ? null : `course-${idx}`) }}
-                          className={`w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px] ${getAvailableCourses(op.qualification).length === 0 ? 'opacity-50 pointer-events-none' : ''}`}
+                        <div
+                          onClick={() => { if (getAvailableCourses(op.qualification).length > 0) setOpenDropdown(openDropdown === `course-${idx}` ? null : `course-${idx}`) }}
+                          className={`w-full bg-white border-2 border-slate-400 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-[10px] cursor-pointer flex items-center justify-between min-h-[30px] ${getAvailableCourses(op.qualification).length === 0 ? 'opacity-50 pointer-events-none' : ''} text-black font-bold shadow-sm`}
                         >
                           <span className="truncate pr-1 block w-[110px]">
-                             {Array.isArray(op.course) && op.course.length > 0 ? op.course.join(", ") : "Select"}
+                            {Array.isArray(op.course) && op.course.length > 0 ? op.course.join(", ") : "Select"}
                           </span>
                           <span className="text-slate-400">▼</span>
                         </div>
@@ -511,15 +512,15 @@ export default function CompanyRegistration() {
                               const isChecked = Array.isArray(op.course) ? op.course.includes(courseOption) : op.course === courseOption;
                               return (
                                 <label key={cIdx} className="flex items-center gap-1.5 cursor-pointer hover:bg-slate-50 py-1 rounded px-1">
-                                  <input 
-                                    type="checkbox" 
-                                    checked={isChecked} 
+                                  <input
+                                    type="checkbox"
+                                    checked={isChecked}
                                     onChange={(e) => {
                                       let newCourses = Array.isArray(op.course) ? [...op.course] : (op.course ? [op.course] : []);
                                       if (e.target.checked) newCourses.push(courseOption);
                                       else newCourses = newCourses.filter(v => v !== courseOption);
                                       handleOpeningChange(idx, { target: { name: "course", value: newCourses } });
-                                    }} 
+                                    }}
                                     className="w-3 h-3 text-accent border-slate-300 rounded focus:ring-accent/30"
                                   />
                                   {courseOption}
@@ -530,13 +531,13 @@ export default function CompanyRegistration() {
                         )}
                       </td>
 
-                      <td className="px-2 py-3"><input name="fromCTC" value={op.fromCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} required={idx === 0} /></td>
-                      <td className="px-2 py-3"><input name="toCTC" value={op.toCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`}  /></td>
-                      <td className="px-2 py-3"><input name="cutOff" value={op.cutOff} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`}  /></td>
-                      <td className="px-2 py-3"><input name="jobLocation" value={op.jobLocation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`}  /></td>
-                      <td className="px-2 py-3"><textarea name="jobDescription" value={op.jobDescription} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-100' : 'border-slate-100'}`} rows="1"  /></td>
+                      <td className="px-2 py-3"><input name="fromCTC" value={op.fromCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border-2 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-400' : 'border-slate-400'}`} required={idx === 0} /></td>
+                      <td className="px-2 py-3"><input name="toCTC" value={op.toCTC} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border-2 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-400' : 'border-slate-400'}`} /></td>
+                      <td className="px-2 py-3"><input name="cutOff" value={op.cutOff} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border-2 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-400' : 'border-slate-400'}`} /></td>
+                      <td className="px-2 py-3"><input name="jobLocation" value={op.jobLocation} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border-2 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-400' : 'border-slate-400'}`} /></td>
+                      <td className="px-2 py-3"><textarea name="jobDescription" value={op.jobDescription} onChange={(e) => handleOpeningChange(idx, e)} className={`w-full bg-white border-2 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent peer text-black font-bold ${submitted ? 'invalid:border-red-500 invalid:bg-red-50 border-slate-400' : 'border-slate-400'}`} rows="1" /></td>
                       <td className="px-2 py-3">
-                        <select name="expFrom" value={op.expFrom} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
+                        <select name="expFrom" value={op.expFrom} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border-2 border-slate-400 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-black font-bold">
                           <option>Exp</option>
                           <option>0</option>
                           <option>1</option>
@@ -544,7 +545,7 @@ export default function CompanyRegistration() {
                         </select>
                       </td>
                       <td className="px-2 py-3">
-                        <select name="expTo" value={op.expTo} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border border-slate-100 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent">
+                        <select name="expTo" value={op.expTo} onChange={(e) => handleOpeningChange(idx, e)} className="w-full bg-white border-2 border-slate-400 rounded-lg p-1.5 focus:outline-none focus:ring-1 focus:ring-accent text-black font-bold">
                           <option>Exp</option>
                           <option>2</option>
                           <option>5</option>
@@ -561,13 +562,52 @@ export default function CompanyRegistration() {
           {/* Section 4: Facilities Required */}
           <section>
             <div className={sectionHeader}>
-              <h2 className={sectionTitle}>Facilities Required:</h2>
+              <h2 className={sectionTitle}>Interview Process & Facilities:</h2>
             </div>
 
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-8 mb-10 bg-white p-8 rounded-3xl border-2 border-slate-500 shadow-2xl transition-all duration-300 hover:shadow-accent/10 animate-fadeIn">
+              <div className={inputGroup}>
+                <label className={labelStyle}>Number of Rooms:<span className="text-red-500 text-sm">*</span></label>
+                <input
+                  type="number"
+                  name="interviewRooms"
+                  value={formData.interviewRooms}
+                  onChange={handleInputChange}
+                  className={inputStyle}
+                  placeholder="e.g. 5"
+                  required
+                />
+                <ErrorMsg />
+              </div>
+              <div className={inputGroup}>
+                <label className={labelStyle}>Number of Panels:<span className="text-red-500 text-sm">*</span></label>
+                <input
+                  type="number"
+                  name="interviewPanels"
+                  value={formData.interviewPanels}
+                  onChange={handleInputChange}
+                  className={inputStyle}
+                  placeholder="e.g. 10"
+                  required
+                />
+                <ErrorMsg />
+              </div>
+              <div className={inputGroup}>
+                <label className={labelStyle}>Additional Notes:</label>
+                <textarea
+                  name="additionalNotes"
+                  value={formData.additionalNotes}
+                  onChange={handleInputChange}
+                  className={inputStyle}
+                  placeholder="Enter any specific requirements..."
+                  rows="1"
+                />
+              </div>
+            </div>
 
             <div className="mt-12 space-y-12">
               <div className="border-l-4 border-accent pl-6 py-2">
-                <h4 className="text-lg font-bold text-primary mb-6">Aptitude Test Hall:</h4>
+
 
                 <div className="space-y-10">
                   <div className={inputGroup}>
@@ -650,7 +690,7 @@ export default function CompanyRegistration() {
           </section>
 
           {/* Section 5: Current Openings */}
-          
+
 
           {/* Form Actions */}
           <div className="flex flex-col sm:flex-row items-center justify-end gap-5 pt-16 border-t border-slate-100 mt-16">
