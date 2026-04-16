@@ -36,7 +36,7 @@ export default function Header() {
             : 'top-10 h-24 bg-white/60 backdrop-blur-sm'
         }`}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-full px-6 lg:px-10">
+        <div className="max-w-full mx-auto flex items-center justify-start h-full px-6 lg:px-10 gap-24 xl:gap-64">
           <Link href="/" className="flex items-center gap-4 lg:gap-8 group no-underline">
             <div className="flex items-center gap-4 lg:gap-6 transition-all duration-300 group-hover:scale-[1.02]">
               <div className="relative h-12 w-auto lg:h-16 flex items-center">
@@ -99,9 +99,9 @@ export default function Header() {
             </div>
 
            
-            <Link href="/candidate-registration" className="text-text-main hover:text-accent transition-colors duration-200">Candidate<br/>Registration</Link>
-            <Link href="/company-registration" className="text-text-main hover:text-accent transition-colors duration-200">Company <br/>Registration</Link>
-            <Link href="#companies" className="text-text-main hover:text-accent transition-colors duration-200">Participating<br/>Companies</Link>
+            <Link href="/candidate-registration" className="text-text-main hover:text-accent transition-colors duration-200 whitespace-nowrap">Candidate Registration</Link>
+            <Link href="/company-registration" className="text-text-main hover:text-accent transition-colors duration-200 whitespace-nowrap">Company Registration</Link>
+            <Link href="#companies" className="text-text-main hover:text-accent transition-colors duration-200 whitespace-nowrap">Participating Companies</Link>
             <Link href="#" className="text-text-main hover:text-accent transition-colors duration-200">Result</Link>
             
             <Link 
