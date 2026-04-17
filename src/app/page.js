@@ -50,7 +50,7 @@ export default function Home() {
           </h1>
 
           <p className="font-serif italic text-white/90 text-lg md:text-xl lg:text-2xl mb-12 drop-shadow-md font-light">
-            Connecting Talent with Opportunity
+            Largest Placement Drive
           </p>
 
           {/* Action Buttons */}

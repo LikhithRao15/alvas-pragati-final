@@ -439,7 +439,7 @@ export default function CompanyRegistration() {
                 <i className="fas fa-plus-circle"></i> Add Opening
               </button>
             </div>
-            <p className="text-[10px] text-slate-400 font-bold mb-4">*Please mark NA for cut off percentage if not required.</p>
+            <p className="text-[10px] text-black font-bold-500 mb-4">*Please mark NA for cut off percentage if not required.</p>
             <div className="w-full overflow-x-auto rounded-3xl border-2 border-slate-500 shadow-2xl pb-40 bg-white">
               <table className="w-full text-left text-[11px] border-collapse min-w-full">
                 <thead className="bg-slate-300 border-b-2 border-slate-500 font-bold text-black uppercase tracking-widest text-[9px]">
@@ -571,10 +571,12 @@ export default function CompanyRegistration() {
                 <input
                   type="number"
                   name="interviewRooms"
+                  min="0"
+                  max="5"
                   value={formData.interviewRooms}
                   onChange={handleInputChange}
                   className={inputStyle}
-                  placeholder="e.g. 5"
+                  placeholder="e.g. 1"
                   required
                 />
                 <ErrorMsg />
@@ -584,10 +586,12 @@ export default function CompanyRegistration() {
                 <input
                   type="number"
                   name="interviewPanels"
+                  min="0"
+                  max="10"
                   value={formData.interviewPanels}
                   onChange={handleInputChange}
                   className={inputStyle}
-                  placeholder="e.g. 10"
+                  placeholder="e.g. 3"
                   required
                 />
                 <ErrorMsg />
@@ -625,14 +629,14 @@ export default function CompanyRegistration() {
                           <input name="numComputers" value={formData.numComputers} onChange={handleInputChange} type="number" className={inputStyle} required />
                           <ErrorMsg />
                         </div>
-                        <div className={inputGroup}>
-                          <label className={labelStyle}>No of Headphones</label>
-                          <input name="numHeadphones" value={formData.numHeadphones} onChange={handleInputChange} className={inputStyle} />
-                        </div>
-                        <div className={inputGroup}>
-                          <label className={labelStyle}>No of Webcams</label>
-                          <input name="numWebcams" value={formData.numWebcams} onChange={handleInputChange} className={inputStyle} />
-                        </div>
+                         <div className={inputGroup}>
+                           <label className={labelStyle}>No of Headphones</label>
+                           <input type="number" name="numHeadphones" min="0" value={formData.numHeadphones} onChange={handleInputChange} className={inputStyle} placeholder="0" />
+                         </div>
+                         <div className={inputGroup}>
+                           <label className={labelStyle}>No of Webcams</label>
+                           <input type="number" name="numWebcams" min="0" value={formData.numWebcams} onChange={handleInputChange} className={inputStyle} placeholder="0" />
+                         </div>
                       </div>
                     )}
                   </div>
@@ -651,6 +655,7 @@ export default function CompanyRegistration() {
                           <label className={labelStyle}>Seating Capacity:<span className="text-red-500 text-sm">*</span></label>
                           <select name="seatingCapacity" value={formData.seatingCapacity} onChange={handleInputChange} className={selectStyle} required>
                             <option value="">Please Select</option>
+                            <option>10</option>
                             <option>25</option>
                             <option>50</option>
                             <option>75</option>
@@ -673,8 +678,8 @@ export default function CompanyRegistration() {
                     {formData.groupDiscussion === "Yes" && (
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 animate-fadeIn">
                         <div className={inputGroup}>
-                          <label className={labelStyle}>Purpose:<span className="text-red-500 text-sm">*</span></label>
-                          <input name="gdPurpose" value={formData.gdPurpose} onChange={handleInputChange} className={inputStyle} required />
+                          <label className={labelStyle}>Purpose:</label>
+                          <input name="gdPurpose" value={formData.gdPurpose} onChange={handleInputChange} className={inputStyle}  />
                           <ErrorMsg />
                         </div>
                         <div className={inputGroup}>

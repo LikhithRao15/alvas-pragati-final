@@ -39,6 +39,9 @@ export default function CandidateRegistration() {
     dob: "",
     email: "",
     familyIncome: "",
+    state: "",
+    district: "",
+    taluk: "",
     address: "",
     resume: null,
 
@@ -52,6 +55,9 @@ export default function CandidateRegistration() {
     diploma: { course: "", mode: "Regular", year: "", marks: "", isNotApplicable: false },
     degree: { course: "", stream: "", mode: "Regular", year: "", marks: "", isNotApplicable: false },
     pg: { course: "", stream: "", mode: "Regular", year: "", marks: "", isNotApplicable: false },
+    otherQualName: "",
+    otherQualDetails: "",
+    other: { mode: "Regular", year: "", marks: "", isNotApplicable: false },
 
     // Section 3: Skills & Aspirations
     technicalSkills: "",
@@ -170,7 +176,27 @@ export default function CandidateRegistration() {
                 <ReviewItem label="DOB" value={formData.dob} />
                 <ReviewItem label="Email" value={formData.email} />
                 <ReviewItem label="Family Income" value={formData.familyIncome} />
-                <ReviewItem label="Highest Qual" value={formData.highestQualification} />
+                <ReviewItem label="State" value={formData.state} />
+                <ReviewItem label="District" value={formData.district} />
+                <ReviewItem label="Taluk" value={formData.taluk} />
+                <ReviewItem label="Highest Qual" value={formData.highestQualification?.toUpperCase() || "N/A"} />
+                <ReviewItem 
+                  label="Highest Qual Course" 
+                  value={
+                    formData.highestQualification === "other" 
+                      ? formData.otherQualName 
+                      : (formData.highestQualification && formData[formData.highestQualification]?.course 
+                        ? (formData[formData.highestQualification].course + (formData[formData.highestQualification]?.stream ? ` - ${formData[formData.highestQualification].stream}` : "")) 
+                        : (formData.highestQualification === "sslc" ? "Standardized" : "N/A"))
+                  } 
+                />
+                {formData.highestQualification === "other" && formData.otherQualDetails && (
+                  <div className="md:col-span-2 lg:col-span-3">
+                    <ReviewItem label="Qualification Details" value={formData.otherQualDetails} />
+                  </div>
+                )}
+                <ReviewItem label="Highest Qual Marks" value={formData[formData.highestQualification]?.marks} />
+                <ReviewItem label="Highest Qual Year" value={formData[formData.highestQualification]?.year} />
                 <ReviewItem label="College Name" value={formData.collegeName} />
                 <ReviewItem label="University/Board" value={formData.universityBoard} />
                 <div className="md:col-span-2 lg:col-span-3">
@@ -183,7 +209,8 @@ export default function CandidateRegistration() {
             </section>
 
             {/* Academic Details Preview */}
-            <section>
+            {formData.highestQualification !== "other" && (
+              <section>
               <h2 className="text-lg font-bold text-accent uppercase tracking-widest mb-6 flex items-center gap-3">
                 <span className="w-8 h-px bg-accent"></span> Academic History
               </h2>
@@ -201,31 +228,31 @@ export default function CandidateRegistration() {
                   </thead>
                   <tbody className="divide-y divide-slate-50">
                     {[
-                      { l: "SSLC", d: formData.sslc, show: !!formData.highestQualification },
+                      { l: "SSLC", d: formData.sslc, show: formData.highestQualification !== "sslc" },
                       { 
                         l: "PUC/12th", 
                         d: formData.puc, 
-                        show: ["PUC", "ITI", "Diploma", "Degree", "PG"].includes(formData.highestQualification) 
+                        show: ["puc", "iti", "diploma", "degree", "pg"].includes(formData.highestQualification) && formData.highestQualification !== "puc"
                       },
                       { 
                         l: "ITI", 
                         d: formData.iti, 
-                        show: ["ITI", "Degree", "PG"].includes(formData.highestQualification) 
+                        show: ["iti", "degree", "pg"].includes(formData.highestQualification) && formData.highestQualification !== "iti"
                       },
                       { 
                         l: "Diploma", 
                         d: formData.diploma, 
-                        show: ["Diploma", "Degree", "PG"].includes(formData.highestQualification) 
+                        show: ["diploma", "degree", "pg"].includes(formData.highestQualification) && formData.highestQualification !== "diploma"
                       },
                       { 
                         l: "Degree", 
                         d: formData.degree, 
-                        show: ["Degree", "PG"].includes(formData.highestQualification) 
+                        show: ["degree", "pg"].includes(formData.highestQualification) && formData.highestQualification !== "degree"
                       },
                       { 
                         l: "PG", 
                         d: formData.pg, 
-                        show: formData.highestQualification === "PG" 
+                        show: formData.highestQualification === "pg" && false // Hide PG from history table if it's highest? 
                       },
                     ].filter(item => item.show && !item.d.isNotApplicable).map((item, idx) => (
                       <tr key={idx} className="text-xs">
@@ -241,6 +268,7 @@ export default function CandidateRegistration() {
                 </table>
               </div>
             </section>
+            )}
 
             {/* Skills & Aspirations Preview */}
             <section>
@@ -340,6 +368,21 @@ export default function CandidateRegistration() {
                 <label className={labelStyle}>Family Income (Annual):</label>
                 <input name="familyIncome" type="number" value={formData.familyIncome} onChange={handleInputChange} className={inputStyle} placeholder="e.g. 500000" />
               </div>
+              <div className={inputGroup}>
+                <label className={labelStyle}>State:<span className="text-red-500 text-sm">*</span></label>
+                <input name="state" value={formData.state} onChange={handleInputChange} className={inputStyle} required placeholder="e.g. Karnataka" />
+                <ErrorMsg />
+              </div>
+              <div className={inputGroup}>
+                <label className={labelStyle}>District:<span className="text-red-500 text-sm">*</span></label>
+                <input name="district" value={formData.district} onChange={handleInputChange} className={inputStyle} required placeholder="e.g. Dakshina Kannada" />
+                <ErrorMsg />
+              </div>
+              <div className={inputGroup}>
+                <label className={labelStyle}>Taluk:<span className="text-red-500 text-sm">*</span></label>
+                <input name="taluk" value={formData.taluk} onChange={handleInputChange} className={inputStyle} required placeholder="e.g. Moodbidri" />
+                <ErrorMsg />
+              </div>
               <div className={`${inputGroup} md:col-span-2 lg:col-span-3`}>
                 <label className={labelStyle}>Address:<span className="text-red-500 text-sm">*</span></label>
                 <textarea name="address" value={formData.address} onChange={handleInputChange} rows="2" className={inputStyle} required placeholder="Enter your full permanent address" />
@@ -355,7 +398,7 @@ export default function CandidateRegistration() {
           {/* Section 2: Academic Details */}
           <section>
             <div className={sectionHeader}>
-              <h2 className={sectionTitle}>Academic Details:</h2>
+              <h2 className={sectionTitle}>Highest Qualification:</h2>
             </div>
 
             <div className={`${inputGroup} mb-8 max-w-md`}>
@@ -368,30 +411,191 @@ export default function CandidateRegistration() {
                 required
               >
                 <option value="" disabled>Select Highest Qualification</option>
-                <option value="SSLC">SSLC</option>
-                <option value="PUC">PUC / 12th</option>
-                <option value="ITI">ITI</option>
-                <option value="Diploma">Diploma</option>
-                <option value="Degree">Degree / Graduation</option>
-                <option value="PG">Post Graduation (PG)</option>
+                <option value="sslc">SSLC</option>
+                <option value="puc">PUC / 12th</option>
+                <option value="iti">ITI</option>
+                <option value="diploma">Diploma</option>
+                <option value="degree">Degree / Graduation</option>
+                <option value="pg">Post Graduation (PG)</option>
+                <option value="other">Other</option>
               </select>
                <ErrorMsg />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-10">
               <div className={inputGroup}>
-                <label className={labelStyle}>College/Institution Name:<span className="text-red-500 text-sm">*</span></label>
-                <input name="collegeName" value={formData.collegeName} onChange={handleInputChange} className={inputStyle} required placeholder="Enter your college name" />
+                <label className={labelStyle}>College/Institution Name:<span className={formData.highestQualification === "other" ? "hidden" : "text-red-500 text-sm"}>*</span></label>
+                <input name="collegeName" value={formData.collegeName} onChange={handleInputChange} className={inputStyle} required={formData.highestQualification !== "other"} placeholder="Enter college name" />
                 <ErrorMsg />
               </div>
               <div className={inputGroup}>
-                <label className={labelStyle}>University/Board:<span className="text-red-500 text-sm">*</span></label>
-                <input name="universityBoard" value={formData.universityBoard} onChange={handleInputChange} className={inputStyle} required placeholder="Enter university or board" />
+                <label className={labelStyle}>University/Board:<span className={formData.highestQualification === "other" ? "hidden" : "text-red-500 text-sm"}>*</span></label>
+                <input name="universityBoard" value={formData.universityBoard} onChange={handleInputChange} className={inputStyle} required={formData.highestQualification !== "other"} placeholder="Enter university or board" />
                 <ErrorMsg />
               </div>
+
+              {formData.highestQualification && (
+                <>
+                  {/* Other Qualification Name Input */}
+                  {formData.highestQualification === "other" && (
+                    <div className={inputGroup}>
+                      <label className={labelStyle}>Qualification Name:<span className="text-red-500 text-sm">*</span></label>
+                      <input 
+                        type="text" 
+                        name="otherQualName" 
+                        value={formData.otherQualName} 
+                        onChange={handleInputChange} 
+                        className={inputStyle} 
+                        required 
+                        placeholder="e.g. PhD, Certification, etc." 
+                      />
+                    </div>
+                  )}
+
+                  {/* Other Qualification Details */}
+                  {formData.highestQualification === "other" && (
+                    <div className={`${inputGroup} md:col-span-2 lg:col-span-2`}>
+                      <label className={labelStyle}>Qualification Details:</label>
+                      <textarea 
+                        name="otherQualDetails" 
+                        value={formData.otherQualDetails} 
+                        onChange={handleInputChange} 
+                        className={inputStyle} 
+                        rows="1" 
+                        placeholder="Provide more details about your qualification..." 
+                      />
+                    </div>
+                  )}
+
+                  {/* Course / Trade / Branch Selection */}
+                  {!["sslc", "other"].includes(formData.highestQualification) && (
+                    <div className={inputGroup}>
+                      <label className={labelStyle}>{["iti", "diploma"].includes(formData.highestQualification) ? (formData.highestQualification === "iti" ? "Trade" : "Branch") : "Course"}:<span className="text-red-500 text-sm">*</span></label>
+                      <select 
+                        value={formData[formData.highestQualification].course} 
+                        onChange={(e) => handleAcademicChange(formData.highestQualification, "course", e.target.value)}
+                        className={baseSelectStyle}
+                        required
+                      >
+                        <option value="">Select {formData.highestQualification.toUpperCase()}</option>
+                        {formData.highestQualification === "puc" && (
+                          <>
+                            <option>Science</option>
+                            <option>Commerce</option>
+                            <option>Arts</option>
+                          </>
+                        )}
+                        {formData.highestQualification === "iti" && (
+                          <>
+                            <option>Fitter</option>
+                            <option>Electrician</option>
+                            <option>Machinist</option>
+                            <option>Welder</option>
+                            <option>Diesel Mechanic</option>
+                            <option>Turner</option>
+                            <option>Instrument Mechanic</option>
+                            <option>Draftsman (Mechanical)</option>
+                            <option>Draftsman (Civil)</option>
+                            <option>Refrigeration and AC Mechanic</option>
+                            <option>Electronics Mechanic</option>
+                            <option>Computer Operator and Programming Assistant (COPA)</option>
+                          </>
+                        )}
+                        {formData.highestQualification === "diploma" && (
+                          <>
+                            <option>Mechanical Engineering</option>
+                            <option>Civil Engineering</option>
+                            <option>Computer Science & Engineering</option>
+                            <option>Electrical & Electronics Engineering</option>
+                            <option>Electronics & Communication Engineering</option>
+                            <option>Information Technology</option>
+                            <option>Automobile Engineering</option>
+                            <option>Mechatronics Engineering</option>
+                            <option>Chemical Engineering</option>
+                            <option>Aeronautical Engineering</option>
+                            <option>Fashion Design</option>
+                            <option>Interior Design</option>
+                          </>
+                        )}
+                        {formData.highestQualification === "degree" && (
+                          ["ANM", "B.A", "B.B.M", "B.Com", "B.E/B.Tech", "B.Ed", "B.H.M.S", "B.H.R.D", "B.Pharm", "B.Sc", "BAMS", "BBA", "BCA", "BDS", "BHM", "BHS", "BNYS", "BPT", "BSW", "BVA", "EEG", "GNM", "LLB", "MBBS", "Microbiology"].map(c => <option key={c}>{c}</option>)
+                        )}
+                        {formData.highestQualification === "pg" && (
+                          ["DNB", "M Ch", "M.A", "M.Com", "M.DS", "M.E./M.Tech", "M.Ed", "M.H.R.D", "M.Pharm", "M.S", "M.S.W", "M.Sc", "MBA", "MCA", "MD", "MHA", "MHM", "MPT", "PGDDC"].map(c => <option key={c}>{c}</option>)
+                        )}
+                      </select>
+                    </div>
+                  )}
+
+                  {/* Stream Selection (For Degree and PG) */}
+                  {["degree", "pg"].includes(formData.highestQualification) && (
+                    <div className={inputGroup}>
+                      <label className={labelStyle}>Stream:<span className="text-red-500 text-sm">*</span></label>
+                      <select 
+                        value={formData[formData.highestQualification].stream} 
+                        onChange={(e) => handleAcademicChange(formData.highestQualification, "stream", e.target.value)}
+                        className={baseSelectStyle}
+                        required
+                      >
+                        <option value="">Select Stream</option>
+                        {(formData.highestQualification === "degree" ? degreeStreamsMap : pgStreamsMap)[formData[formData.highestQualification].course]?.map(s => (
+                          <option key={s}>{s}</option>
+                        )) || <option disabled>N/A</option>}
+                      </select>
+                    </div>
+                  )}
+
+                  {formData.highestQualification !== "other" && (
+                    <>
+                      <div className={inputGroup}>
+                        <label className={labelStyle}>Mode of Study:<span className="text-red-500 text-sm">*</span></label>
+                        <select 
+                          value={formData[formData.highestQualification].mode} 
+                          onChange={(e) => handleAcademicChange(formData.highestQualification, "mode", e.target.value)}
+                          className={baseSelectStyle}
+                        >
+                          <option>Regular</option>
+                          <option>Correspondence</option>
+                        </select>
+                      </div>
+
+                      <div className={inputGroup}>
+                        <label className={labelStyle}>Year of Passing:<span className="text-red-500 text-sm">*</span></label>
+                        <select 
+                          value={formData[formData.highestQualification].year} 
+                          onChange={(e) => handleAcademicChange(formData.highestQualification, "year", e.target.value)}
+                          className={baseSelectStyle}
+                          required
+                        >
+                          <option value="">Year</option>
+                          {years.map(y => <option key={y} value={y}>{y}</option>)}
+                        </select>
+                      </div>
+
+                      <div className={inputGroup}>
+                        <label className={labelStyle}>Percentage / CGPA:<span className="text-red-500 text-sm">*</span></label>
+                        <input 
+                          type="text" 
+                          value={formData[formData.highestQualification].marks} 
+                          onChange={(e) => handleAcademicChange(formData.highestQualification, "marks", e.target.value)}
+                          className={inputStyle}
+                          placeholder="Enter % or Grade"
+                          required
+                        />
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
             </div>
 
-            {formData.highestQualification && (
+            {formData.highestQualification && formData.highestQualification !== "other" && (
+              <>
+                <div className="flex items-center gap-4 mb-6">
+                   <div className="flex-1 h-px bg-slate-300"></div>
+                   <span className="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em]">Academic History</span>
+                   <div className="flex-1 h-px bg-slate-300"></div>
+                </div>
               <div className="overflow-x-auto rounded-2xl border-2 border-slate-500 shadow-2xl mb-6 bg-white">
                 <table className="w-full text-left text-sm border-collapse min-w-[850px]">
                   <thead className="bg-slate-300 border-b-2 border-slate-500 uppercase tracking-wider text-[10px] font-bold text-black tracking-widest">
@@ -406,8 +610,9 @@ export default function CandidateRegistration() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-50">
-                    {/* SSLC - Always show if qualification is selected */}
-                    <tr className={`transition-colors ${formData.sslc.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
+                    {/* SSLC - Show only if NOT the highest qualification */}
+                    {formData.highestQualification !== "sslc" && (
+                      <tr className={`transition-colors ${formData.sslc.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
                       <td className="px-4 py-4"><input type="checkbox" checked={formData.sslc.isNotApplicable} onChange={(e) => handleAcademicChange("sslc", "isNotApplicable", e.target.checked)} /></td>
                       <td className="px-6 py-4 font-bold text-primary">SSLC</td>
                       <td className="px-6 py-4 text-slate-400 italic text-xs">Standardized</td>
@@ -426,9 +631,10 @@ export default function CandidateRegistration() {
                       </td>
                       <td className="px-6 py-4"><input disabled={formData.sslc.isNotApplicable} type="text" value={formData.sslc.marks} placeholder="%" onChange={(e) => handleAcademicChange("sslc", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-500 focus:border-accent text-black font-bold" /></td>
                     </tr>
+                    )}
                     
-                    {/* PUC - Show for PUC, ITI, Diploma, Degree and PG */}
-                    {["PUC", "ITI", "Diploma", "Degree", "PG"].includes(formData.highestQualification) && (
+                    {/* PUC - Show for ITI, Diploma, Degree and PG (if it was a background step) */}
+                    {["iti", "diploma", "degree", "pg"].includes(formData.highestQualification) && (
                       <tr className={`transition-colors ${formData.puc.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
                         <td className="px-4 py-4"><input type="checkbox" checked={formData.puc.isNotApplicable} onChange={(e) => handleAcademicChange("puc", "isNotApplicable", e.target.checked)} /></td>
                         <td className="px-6 py-4 font-bold text-primary">PUC / 12th</td>
@@ -457,8 +663,8 @@ export default function CandidateRegistration() {
                       </tr>
                     )}
 
-                    {/* ITI - Show for ITI, Degree and PG */}
-                    {["ITI", "Degree", "PG"].includes(formData.highestQualification) && (
+                    {/* ITI - Show for Diploma, Degree and PG */}
+                    {["diploma", "degree", "pg"].includes(formData.highestQualification) && (
                       <tr className={`transition-colors ${formData.iti.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
                         <td className="px-4 py-4"><input type="checkbox" checked={formData.iti.isNotApplicable} onChange={(e) => handleAcademicChange("iti", "isNotApplicable", e.target.checked)} /></td>
                         <td className="px-6 py-4 font-bold text-primary">ITI</td>
@@ -496,8 +702,8 @@ export default function CandidateRegistration() {
                       </tr>
                     )}
 
-                    {/* Diploma - Show for Diploma, Degree and PG */}
-                    {["Diploma", "Degree", "PG"].includes(formData.highestQualification) && (
+                    {/* Diploma - Show for Degree and PG */}
+                    {["degree", "pg"].includes(formData.highestQualification) && (
                       <tr className={`transition-colors ${formData.diploma.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
                         <td className="px-4 py-4"><input type="checkbox" checked={formData.diploma.isNotApplicable} onChange={(e) => handleAcademicChange("diploma", "isNotApplicable", e.target.checked)} /></td>
                         <td className="px-6 py-4 font-bold text-primary">Diploma</td>
@@ -535,8 +741,8 @@ export default function CandidateRegistration() {
                       </tr>
                     )}
 
-                    {/* Degree - Show for Degree and PG */}
-                    {["Degree", "PG"].includes(formData.highestQualification) && (
+                    {/* Degree - Show for PG */}
+                    {formData.highestQualification === "pg" && (
                       <tr className={`transition-colors ${formData.degree.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
                         <td className="px-4 py-4"><input type="checkbox" checked={formData.degree.isNotApplicable} onChange={(e) => handleAcademicChange("degree", "isNotApplicable", e.target.checked)} /></td>
                         <td className="px-6 py-4 font-bold text-primary">Graduation (Degree)</td>
@@ -601,68 +807,11 @@ export default function CandidateRegistration() {
                       </tr>
                     )}
 
-                    {/* PG - Only for PG */}
-                    {formData.highestQualification === "PG" && (
-                      <tr className={`transition-colors ${formData.pg.isNotApplicable ? 'bg-slate-50/50 opacity-60' : 'hover:bg-slate-50/30'}`}>
-                        <td className="px-4 py-4"><input type="checkbox" checked={formData.pg.isNotApplicable} onChange={(e) => handleAcademicChange("pg", "isNotApplicable", e.target.checked)} /></td>
-                        <td className="px-6 py-4 font-bold text-primary">Post Graduation</td>
-                        <td className="px-6 py-4">
-                           <select disabled={formData.pg.isNotApplicable} value={formData.pg.course} onChange={(e) => {
-                             handleAcademicChange("pg", "course", e.target.value);
-                             handleAcademicChange("pg", "stream", "");
-                           }} className="w-full bg-transparent text-xs focus:outline-none border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight">
-                            <option value="">Select Course</option>
-                            <option>DNB</option>
-                            <option>M Ch</option>
-                            <option>M.A</option>
-                            <option>M.Com</option>
-                            <option>M.DS</option>
-                            <option>M.E./M.Tech</option>
-                            <option>M.Ed</option>
-                            <option>M.H.R.D</option>
-                            <option>M.Pharm</option>
-                            <option>M.S</option>
-                            <option>M.S.W</option>
-                            <option>M.Sc</option>
-                            <option>MBA</option>
-                            <option>MCA</option>
-                            <option>MD</option>
-                            <option>MHA</option>
-                            <option>MHM</option>
-                            <option>MPT</option>
-                            <option>PGDDC</option>
-                          </select>
-                        </td>
-                        <td className="px-6 py-4">
-                          {pgStreamsMap[formData.pg.course] ? (
-                            <select disabled={formData.pg.isNotApplicable} value={formData.pg.stream} onChange={(e) => handleAcademicChange("pg", "stream", e.target.value)} className="w-full bg-transparent border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight focus:outline-none text-xs">
-                              <option value="">Select Stream</option>
-                              {pgStreamsMap[formData.pg.course].map(stream => (
-                                <option key={stream} value={stream}>{stream}</option>
-                              ))}
-                            </select>
-                          ) : (
-                            <span className="text-slate-400 italic text-xs">N/A</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4">
-                          <select disabled={formData.pg.isNotApplicable} name="pg-mode" value={formData.pg.mode} onChange={(e) => handleAcademicChange("pg", "mode", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight">
-                            <option>Regular</option>
-                            <option>Correspondence</option>
-                          </select>
-                        </td>
-                        <td className="px-6 py-4">
-                          <select disabled={formData.pg.isNotApplicable} value={formData.pg.year} onChange={(e) => handleAcademicChange("pg", "year", e.target.value)} className="bg-transparent text-xs focus:outline-none border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight">
-                            <option value="">Year</option>
-                            {years.map(y => <option key={y} value={y}>{y}</option>)}
-                          </select>
-                        </td>
-                        <td className="px-6 py-4"><input disabled={formData.pg.isNotApplicable} type="text" value={formData.pg.marks} placeholder="%" onChange={(e) => handleAcademicChange("pg", "marks", e.target.value)} className="w-16 bg-transparent border-b border-slate-500 focus:border-accent text-black font-bold tracking-tight focus:outline-none text-xs" /></td>
-                      </tr>
-                    )}
+                    {/* PG - Never in history table (always current) */}
                   </tbody>
                 </table>
               </div>
+            </>
             )}
           </section>
 
