@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Footer() {
   return (
@@ -8,13 +9,29 @@ export default function Footer() {
           
           {/* Column 1: Brand */}
           <div className="col-span-1 lg:col-span-1 pr-0 lg:pr-6">
-            <div className="flex items-start gap-3 mb-5">
-              <span className="text-accent text-sm pt-0.5">✦</span>
-              <div className="flex flex-col">
-                <h3 className="font-serif font-bold text-[22px] text-white leading-none mb-1 shadow-sm drop-shadow-sm">Alvas Pragati</h3>
-                <h4 className="text-[11px] tracking-[0.2em] text-red-700/80 uppercase font-bold">Placement Cell</h4>
+            <Link href="/" className="inline-flex items-center mb-8 group no-underline">
+              <div className="flex items-center gap-4 bg-white/95 rounded-2xl p-4 transition-all duration-300 group-hover:bg-white group-hover:scale-[1.02] shadow-sm">
+                <div className="relative h-12 w-auto flex items-center">
+                  <Image
+                    src="/pragathi.png"
+                    alt="Pragathi Logo"
+                    width={150}
+                    height={60}
+                    className="h-full w-auto object-contain"
+                  />
+                </div>
+                <div className="w-px h-8 bg-slate-200 hidden sm:block"></div>
+                <div className="relative h-12 w-auto flex items-center">
+                  <Image
+                    src="/alva's.png"
+                    alt="Alva's Logo"
+                    width={160}
+                    height={60}
+                    className="h-full w-auto object-contain"
+                  />
+                </div>
               </div>
-            </div>
+            </Link>
             <p className="text-[13px] text-white leading-relaxed mb-8 font-medium">
               Alvas Pragati is the annual placement drive of Alva's Education Foundation, connecting thousands of students with industry opportunities across India.
             </p>

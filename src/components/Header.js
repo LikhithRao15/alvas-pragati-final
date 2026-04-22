@@ -36,10 +36,10 @@ export default function Header() {
             : 'top-10 h-24 bg-white/60 backdrop-blur-sm'
         }`}
       >
-        <div className="max-w-full mx-auto flex items-center justify-start h-full px-6 lg:px-10 gap-24 xl:gap-64">
+        <div className="max-w-full mx-auto flex items-center justify-between h-full px-4 lg:px-10">
           <Link href="/" className="flex items-center gap-4 lg:gap-8 group no-underline">
-            <div className="flex items-center gap-4 lg:gap-6 transition-all duration-300 group-hover:scale-[1.02]">
-              <div className="relative h-12 w-auto lg:h-16 flex items-center">
+            <div className="flex items-center gap-3 lg:gap-6 transition-all duration-300 group-hover:scale-[1.02]">
+              <div className="relative h-10 w-auto lg:h-14 xl:h-16 flex items-center">
                 <Image
                   src="/pragathi.png"
                   alt="Pragathi Logo"
@@ -49,8 +49,8 @@ export default function Header() {
                   priority
                 />
               </div>
-              <div className="w-px h-10 lg:h-12 bg-black/10 hidden sm:block"></div>
-              <div className="relative h-12 w-auto lg:h-[4.5rem] flex items-center">
+              <div className="w-px h-8 lg:h-12 bg-black/10 hidden sm:block"></div>
+              <div className="relative h-10 w-auto lg:h-[3.5rem] xl:h-[4.5rem] flex items-center">
                 <Image
                   src="/alva's.png"
                   alt="Alva's Logo"
@@ -64,7 +64,7 @@ export default function Header() {
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden xl:flex items-center gap-8 font-main text-sm font-semibold">
+          <nav className="hidden xl:flex items-center gap-4 2xl:gap-8 font-main text-[13px] 2xl:text-sm font-semibold">
             <Link
               href="/"
               className="text-text-main hover:text-accent transition-colors duration-200"
@@ -106,7 +106,7 @@ export default function Header() {
             
             <Link 
               href="/contact" 
-              className="ml-2 px-7 py-2.5 bg-primary text-white font-medium rounded-full hover:bg-accent transition-all duration-300 transform hover:-translate-y-[2px] shadow-sm hover:shadow-md"
+              className="ml-2 px-5 py-2.5 bg-primary text-white font-medium rounded-full hover:bg-accent transition-all duration-300 transform hover:-translate-y-[2px] shadow-sm hover:shadow-md whitespace-nowrap"
             >
               Contact Us
             </Link>
